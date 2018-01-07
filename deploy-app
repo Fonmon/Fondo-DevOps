@@ -1,0 +1,33 @@
+#!/bin/bash
+
+##########################################
+# Script to deploy app in current server #
+##########################################
+
+COMMIT=$1
+echo "Deploying app with commit: ${COMMIT}"
+
+# back build
+if [ "$(docker ps -q -f name=fondo_api)" ]; then
+	echo 'stopping fondo_api'
+	docker stop fondo_api
+fi
+
+cd /home/miguel/Documents/Fondo-DevOps/back/Fondo-API
+git pull origin master
+
+# front build
+if [ "$(docker ps -q -f name=fondo_web)" ]; then
+	echo 'stopping fondo_web'
+	docker stop fondo_web
+fi
+cd /home/miguel/Documents/Fondo-DevOps/front/Fondo-Web
+git pull origin master
+
+rm -rf node_modules build/*
+npm install && npm run build
+
+# starting containers
+cd ../..
+docker start fondo_api || docker-compose up -d api
+docker start fondo_web || docker-compose up -d web

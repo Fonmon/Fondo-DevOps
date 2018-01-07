@@ -1,0 +1,36 @@
+version: '2'
+services:
+  fondodb:
+    image: postgres
+    container_name: fondo_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    expose:
+      - 5432
+
+  api:
+    image: python:3
+    env_file: .env
+    container_name: fondo_api
+    ports:
+      - 8443:8443
+    volumes:
+      - ./certificates/:/app/certificates
+      - ./back/Fondo-API/:/app
+    depends_on:
+      - fondodb
+    command: sh /app/scripts/run-server.sh
+
+  web:
+    image: nginx:1.13
+    container_name: fondo_web
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./front/nginx.conf:/etc/nginx/nginx.conf
+      - ./front/Fondo-Web/build/:/usr/share/nginx/html
+      - ./front/static_files/:/usr/share/nginx/html/static_files
+      - ./certificates/:/etc/nginx/certs

@@ -1,0 +1,47 @@
+#!/bin/bash
+
+####################################
+# Script to build prod environment #
+####################################
+
+# python and node install
+apt-get update && sudo apt-get install nodejs\
+	npm\
+	python-setuptools\
+	python-dev\
+	build-essential
+easy_install pip
+pip install --upgrade virtualenv
+
+# docker install
+curl -sSL https://get.docker.com/ | sh
+usermod -aG docker ubuntu
+
+# docker-compose install
+curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+# certbot install
+apt-get install software-properties-common
+add-apt-repository ppa:certbot/certbot
+apt-get update
+apt-get install certbot
+
+mkdir certificates
+mkdir back
+
+# deploy-app command
+cp deploy-app /usr/bin/
+chmod +x /usr/bin/deploy-app
+
+cd back
+git clone https://github.com/Fonmon/Fondo-API.git
+
+cd ../front
+mkdir static_files
+git clone https://github.com/Fonmon/Fondo-Web.git
+cd Fondo-Web
+npm install && npm run build
+
+# start running db
+docker-compose up -d fondodb
