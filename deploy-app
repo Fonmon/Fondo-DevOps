@@ -13,7 +13,7 @@ if [ "$(docker ps -q -f name=fondo_api)" ]; then
 	docker stop fondo_api
 fi
 
-cd /home/miguel/Documents/Fondo-DevOps/back/Fondo-API
+cd /home/ubuntu/Fondo-DevOps/back/Fondo-API
 git pull origin master
 
 # front build
@@ -21,7 +21,7 @@ if [ "$(docker ps -q -f name=fondo_web)" ]; then
 	echo 'stopping fondo_web'
 	docker stop fondo_web
 fi
-cd /home/miguel/Documents/Fondo-DevOps/front/Fondo-Web
+cd /home/ubuntu/Fondo-DevOps/front/Fondo-Web
 git pull origin master
 
 rm -rf node_modules build/*
