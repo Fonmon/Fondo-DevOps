@@ -31,7 +31,8 @@ add-apt-repository ppa:certbot/certbot
 apt-get update
 apt-get install certbot
 
-mkdir certificates
+mkdir -p certificates/web
+mkdir -p certificates/api
 mkdir back
 
 # deploy-app command
