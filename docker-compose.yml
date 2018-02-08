@@ -11,7 +11,8 @@ services:
       - 5432
 
   api:
-    image: python:3
+    build: ./back
+    image: api_image
     env_file: .env
     container_name: fondo_api
     expose:
