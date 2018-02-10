@@ -33,7 +33,7 @@ if [ $LAYER == 'web' ]; then
 	ARTIFACT_URI="https://github.com/Fonmon/Fondo-Web/archive/${COMMIT}.zip"
 fi
 
-if [ "$(docker ps -q -f name=$ACTUAL_CONTAINER_NAME)" ]; then
+if [ "$(docker ps -a -q -f name=$ACTUAL_CONTAINER_NAME)" ]; then
 	echo "stopping fondo_${LAYER}"
 	docker stop $ACTUAL_CONTAINER_NAME && \
 	docker rm $ACTUAL_CONTAINER_NAME
