@@ -57,7 +57,7 @@ sh build-docker.sh $CONTAINER_ID $HOST_APP && \
 sh run-docker.sh $CONTAINER_ID 
 
 cd ..
-rm -rf Fondo-*
+rm -rf Fondo-*${COMMIT}
 
 echo "Finish deploy ${LAYER} layer"
 exit 0
