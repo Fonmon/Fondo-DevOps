@@ -18,26 +18,24 @@ cd /home/ubuntu/Fondo-DevOps/
 
 COMMIT=$1
 LAYER=$2
-PREV_CONTAINER_ID=$(cat previous_container_id || date)
 
 echo "Deploying ${LAYER} with commit: ${COMMIT}"
 
 if [ $LAYER == 'api' ]
 then
-	if [ "$(docker ps -q -f name=fondo_api_$PREV_CONTAINER_ID)" ]; then
-		echo 'stopping fondo_api'
-		docker stop fondo_api
-	fi
+	ACTUAL_CONTAINER_NAME=fondo_api
 	ARTIFACT_URI="https://github.com/Fonmon/Fondo-API/archive/${COMMIT}.zip"
 fi
 
 if [ $LAYER == 'web' ]
 then
-	if [ "$(docker ps -q -f name=fondo_web_$PREV_CONTAINER_ID)" ]; then
-		echo 'stopping fondo_web'
-		docker stop fondo_web
-	fi
+	ACTUAL_CONTAINER_NAME=fondo_web
 	ARTIFACT_URI="https://github.com/Fonmon/Fondo-Web/archive/${COMMIT}.zip"
+fi
+
+if [ "$(docker ps -q -f name=$ACTUAL_CONTAINER_NAME)" ]; then
+	echo "stopping fondo_${LAYER}"
+	docker stop $ACTUAL_CONTAINER_NAME
 fi
 
 wget $ARTIFACT_URI && \
@@ -47,7 +45,6 @@ rm Fondo-*.zip
 cd Fondo-*
 
 CONTAINER_ID=$(date +%Y%m%d%H%M)
-echo $CONTAINER_ID > previous_container_id
 
 echo "Creating docker image and container with suffix: ${CONTAINER_ID}"
 sh container/build-docker.sh $CONTAINER_ID && \
