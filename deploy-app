@@ -48,13 +48,13 @@ wget $ARTIFACT_URI && \
 unzip ${COMMIT}.zip && \
 rm ${COMMIT}.zip
 
-cd Fondo-*/container
+cd Fondo-*
 
 CONTAINER_ID=$(date +%Y%m%d%H%M)
 
 echo "Creating docker image and container with suffix: ${CONTAINER_ID}"
-sh build-docker.sh $CONTAINER_ID $HOST_APP && \
-sh run-docker.sh $CONTAINER_ID 
+sh container/build-docker.sh $CONTAINER_ID $HOST_APP && \
+sh container/run-docker.sh $CONTAINER_ID 
 
 cd ..
 rm -rf Fondo-*${COMMIT}
