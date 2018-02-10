@@ -35,7 +35,8 @@ fi
 
 if [ "$(docker ps -q -f name=$ACTUAL_CONTAINER_NAME)" ]; then
 	echo "stopping fondo_${LAYER}"
-	docker stop $ACTUAL_CONTAINER_NAME
+	docker stop $ACTUAL_CONTAINER_NAME && \
+	docker rm $ACTUAL_CONTAINER_NAME
 fi
 
 if [ $ENV == 'master' ]; then
