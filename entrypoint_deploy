@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ $# -ne 3 ] then
+	echo 'Arguments: commit_revision {web|api} {master|develop}'
+	exit 1
+fi
+
+cd /home/ubuntu/Fondo-DevOps/
+git pull origin master
+./deploy-app $1 $2 $3 >> logs/deploy.log

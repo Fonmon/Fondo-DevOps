@@ -7,10 +7,11 @@
 # Arguments length: 2
 # 1: commit revision
 # 2: layer to deploy
+# 3: env
 
-if [ $# -ne 2 ]
+if [ $# -ne 3 ]
 then
-	echo 'Arguments: commit_revision {web|api}'
+	echo 'Arguments: commit_revision {web|api} {master|develop}'
 	exit 1
 fi
 
@@ -18,24 +19,29 @@ cd /home/ubuntu/Fondo-DevOps/
 
 COMMIT=$1
 LAYER=$2
+ENV=$3
 
 echo "Deploying ${LAYER} with commit: ${COMMIT}"
 
-if [ $LAYER == 'api' ]
-then
+if [ $LAYER == 'api' ] then
 	ACTUAL_CONTAINER_NAME=fondo_api
 	ARTIFACT_URI="https://github.com/Fonmon/Fondo-API/archive/${COMMIT}.zip"
 fi
 
-if [ $LAYER == 'web' ]
-then
+if [ $LAYER == 'web' ] then
 	ACTUAL_CONTAINER_NAME=fondo_web
 	ARTIFACT_URI="https://github.com/Fonmon/Fondo-Web/archive/${COMMIT}.zip"
 fi
 
-if [ "$(docker ps -q -f name=$ACTUAL_CONTAINER_NAME)" ]; then
+if [ "$(docker ps -q -f name=$ACTUAL_CONTAINER_NAME)" ] then
 	echo "stopping fondo_${LAYER}"
 	docker stop $ACTUAL_CONTAINER_NAME
+fi
+
+if [ $ENV == 'master' ] then
+	HOST_APP=https://api-fonmon.minagle.com/
+else
+	HOST_APP=https://dev-api-fonmon.minagle.com/
 fi
 
 wget $ARTIFACT_URI && \
@@ -47,8 +53,11 @@ cd Fondo-*
 CONTAINER_ID=$(date +%Y%m%d%H%M)
 
 echo "Creating docker image and container with suffix: ${CONTAINER_ID}"
-sh container/build-docker.sh $CONTAINER_ID && \
+sh container/build-docker.sh $CONTAINER_ID $HOST_APP && \
 sh container/run-docker.sh $CONTAINER_ID 
+
+cd ..
+rm -rf Fondo-*
 
 echo "Finish deploy ${LAYER} layer"
 exit 0
