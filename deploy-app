@@ -44,8 +44,8 @@ else
 fi
 
 wget $ARTIFACT_URI && \
-unzip Fondo-* && \
-rm Fondo-*.zip
+unzip ${COMMIT}.zip && \
+rm ${COMMIT}.zip
 
 cd Fondo-*
 
