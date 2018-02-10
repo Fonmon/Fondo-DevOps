@@ -1,33 +1,57 @@
 #!/bin/bash
 
-##########################################
-# Script to deploy app in current server #
-##########################################
+######################################################
+# Script to deploy specified layer in current server #
+######################################################
+
+# Arguments length: 2
+# 1: commit revision
+# 2: layer to deploy
+
+if [ $# -ne 2 ]
+then
+	echo 'Arguments: commit_revision {web|api}'
+	exit 1
+fi
+
+cd /home/ubuntu/Fondo-DevOps/
 
 COMMIT=$1
-echo "Deploying app with commit: ${COMMIT}"
+LAYER=$2
+PREV_CONTAINER_ID=$(cat previous_container_id || date)
 
-# back build
-if [ "$(docker ps -q -f name=fondo_api)" ]; then
-	echo 'stopping fondo_api'
-	docker stop fondo_api
+echo "Deploying ${LAYER} with commit: ${COMMIT}"
+
+if [ $LAYER == 'api' ]
+then
+	if [ "$(docker ps -q -f name=fondo_api_$PREV_CONTAINER_ID)" ]; then
+		echo 'stopping fondo_api'
+		docker stop fondo_api
+	fi
+	ARTIFACT_URI="https://github.com/Fonmon/Fondo-API/archive/${COMMIT}.zip"
 fi
 
-cd /home/ubuntu/Fondo-DevOps/back/Fondo-API
-git pull origin master
-
-# front build
-if [ "$(docker ps -q -f name=fondo_web)" ]; then
-	echo 'stopping fondo_web'
-	docker stop fondo_web
+if [ $LAYER == 'web' ]
+then
+	if [ "$(docker ps -q -f name=fondo_web_$PREV_CONTAINER_ID)" ]; then
+		echo 'stopping fondo_web'
+		docker stop fondo_web
+	fi
+	ARTIFACT_URI="https://github.com/Fonmon/Fondo-Web/archive/${COMMIT}.zip"
 fi
-cd /home/ubuntu/Fondo-DevOps/front/Fondo-Web
-git pull origin master
 
-rm -rf node_modules build/*
-npm install && npm run build
+wget $ARTIFACT_URI && \
+unzip Fondo-* && \
+rm Fondo-*.zip
 
-# starting containers
-cd ../..
-docker start fondo_api || docker-compose up -d api
-docker start fondo_web || docker-compose up -d web
+cd Fondo-*
+
+CONTAINER_ID=$(date +%Y%m%d%H%M)
+echo $CONTAINER_ID > previous_container_id
+
+echo "Creating docker image and container with suffix: ${CONTAINER_ID}"
+sh container/build-docker.sh $CONTAINER_ID && \
+sh container/run-docker.sh $CONTAINER_ID 
+
+echo "Finish deploy ${LAYER} layer"
+exit 0

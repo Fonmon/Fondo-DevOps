@@ -1,17 +1,8 @@
 #!/bin/bash
 
 ####################################
-# Script to build prod environment #
+# Script to build prod like env    #
 ####################################
-
-# python and node install
-apt-get update && apt-get install nodejs\
-	npm\
-	python-setuptools\
-	python-dev\
-	build-essential
-easy_install pip
-pip install --upgrade virtualenv
 
 # docker install
 if [ !"$(which docker)" ]; then
@@ -26,10 +17,10 @@ if [ !"$(which docker-compose)" ]; then
 fi
 
 # certbot install
-apt-get install software-properties-common
+apt-get install -y software-properties-common unzip python3
 add-apt-repository ppa:certbot/certbot
 apt-get update
-apt-get install certbot
+apt-get install -y certbot
 
 mkdir -p certificates/web
 mkdir -p certificates/api
@@ -38,14 +29,8 @@ mkdir -p certificates/api
 cp deploy-app /usr/bin/
 chmod +x /usr/bin/deploy-app
 
-cd back
-git clone https://github.com/Fonmon/Fondo-API.git
-
-cd ../front
+cd front
 mkdir static_files
-git clone https://github.com/Fonmon/Fondo-Web.git
-cd Fondo-Web
-npm install && npm run build
 
 # start running db
 docker-compose up -d fondodb
