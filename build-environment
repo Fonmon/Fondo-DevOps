@@ -50,4 +50,4 @@ docker network create \
 	fondo_network
 
 # start running db
-docker-compose up -d fondodb
+docker-compose up -d
