@@ -48,7 +48,7 @@ wget $ARTIFACT_URI && \
 unzip ${COMMIT}.zip && \
 rm ${COMMIT}.zip
 
-cd Fondo-*
+cd Fondo-*${COMMIT}
 
 CONTAINER_ID=$(date +%Y%m%d%H%M)
 
