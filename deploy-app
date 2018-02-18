@@ -40,9 +40,9 @@ if [ "$(docker ps -a -q -f name=$ACTUAL_CONTAINER_NAME)" ]; then
 fi
 
 if [ $ENV == 'master' ]; then
-	HOST_APP=https://api-fonmon.minagle.com/
+	HOST_APP=api-fonmon.minagle.com
 else
-	HOST_APP=https://dev-api-fonmon.minagle.com/
+	HOST_APP=dev-api-fonmon.minagle.com
 fi
 
 wget $ARTIFACT_URI && \
