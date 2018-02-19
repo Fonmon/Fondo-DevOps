@@ -35,6 +35,7 @@ mkdir -p certificates/web
 mkdir -p certificates/api
 
 mkdir logs
+mkdir front
 
 # entrypoint_deploy command
 cp entrypoint_deploy /usr/bin/
