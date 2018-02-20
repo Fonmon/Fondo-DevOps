@@ -18,7 +18,7 @@ fi
 
 # certbot install
 apt-get install -y software-properties-common unzip python3
-add-apt-repository ppa:certbot/certbot
+add-apt-repository ppa:certbot/certbot -y
 apt-get update
 apt-get install -y certbot
 
