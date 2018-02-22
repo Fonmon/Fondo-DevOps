@@ -4,6 +4,9 @@
 # Script to build prod like env    #
 ####################################
 
+cd /home/ubuntu/Fondo-DevOps/
+echo "export HOME_FONMON=$(pwd)" >> /etc/profile
+
 # docker install
 if [ !"$(which docker)" ]; then
 	curl -sSL https://get.docker.com/ | sh
@@ -33,16 +36,12 @@ systemctl start amazon-ssm-agent
 
 mkdir -p certificates/web
 mkdir -p certificates/api
-
+mkdir -p front/static_files
 mkdir logs
-mkdir front
 
 # entrypoint_deploy command
-cp entrypoint_deploy /usr/bin/
+cp environment/entrypoint_deploy /usr/bin/
 chmod +x /usr/bin/entrypoint_deploy
-
-cd front
-mkdir static_files
 
 # build network for containers
 docker network create \
@@ -51,4 +50,5 @@ docker network create \
 	fondo_network
 
 # start running db
+cd deploy
 docker-compose up -d

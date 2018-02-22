@@ -5,6 +5,6 @@ if [ $# -ne 3 ]; then
 	exit 1
 fi
 
-cd /home/ubuntu/Fondo-DevOps/
+cd $HOME_FONMON
 git pull origin master
-./deploy-app $1 $2 $3 >> logs/deploy.log
+./deploy/deploy-app $1 $2 $3 >> logs/deploy.log

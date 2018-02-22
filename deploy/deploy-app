@@ -15,7 +15,7 @@ if [ $# -ne 3 ]; then
 	exit 1
 fi
 
-cd /home/ubuntu/Fondo-DevOps/
+cd $HOME_FONMON
 
 COMMIT=$1
 LAYER=$2
