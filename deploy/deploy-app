@@ -55,8 +55,8 @@ cd Fondo-*${COMMIT}
 CONTAINER_ID=$(date +%Y%m%d%H%M)
 
 echo "Creating docker image and container with suffix: ${CONTAINER_ID}"
-sh container/build-docker.sh $CONTAINER_ID $HOST_APP && \
-sh container/run-docker.sh $CONTAINER_ID 
+bash container/build-docker $CONTAINER_ID $HOST_APP && \
+bash container/run-docker $CONTAINER_ID 
 
 cd ..
 rm -rf Fondo-*${COMMIT}
