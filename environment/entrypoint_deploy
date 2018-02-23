@@ -5,6 +5,8 @@ if [ $# -ne 3 ]; then
 	exit 1
 fi
 
+source /etc/environment
+
 cd $HOME_FONMON
 git pull origin master
 ./deploy/deploy-app $1 $2 $3 >> logs/deploy.log
