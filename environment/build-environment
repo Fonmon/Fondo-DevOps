@@ -5,8 +5,7 @@
 ####################################
 
 cd /home/ubuntu/Fondo-DevOps/
-echo "export HOME_FONMON=$(pwd)" >> /root/.bashrc
-echo "export HOME_FONMON=$(pwd)" >> /home/ubuntu/.bashrc
+echo "export HOME_FONMON=$(pwd)" >> /etc/environment
 
 # docker install
 if [ !"$(which docker)" ]; then
