@@ -14,10 +14,15 @@ VARIABLES=( DB ENV )
 
 # Copying crontab scripts
 cp generate-dump /etc/cron.weekly/
+cp renew-certificates /etc/letsencrypt/renewal-hooks/deploy
 
+# setup dump script
 cd /etc/cron.weekly
 for i in ${VARIABLES[@]}; do
     sed -i "s/${PREFIX}_${i}_${SUFFIX}/${!i}/g" generate-dump
 done
-
 chmod +x generate-dump
+
+# setup renew certificates script
+echo "0 5 1 * * root certbot renew" >> /etc/crontab
+chmod +x /etc/letsencrypt/renewal-hooks/deploy/renew-certificates
