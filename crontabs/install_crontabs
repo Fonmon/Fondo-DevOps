@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ $# -ne 2 ]; then
+    echo 'Arguments: db_name environment'
+    exit 1
+fi
+
+DB=$1
+ENV=$2
+
+PREFIX=INSTALL
+SUFFIX=NAME
+VARIABLES=( DB ENV )
+
+# Copying crontab scripts
+cp generate-dump /etc/cron.weekly/
+
+cd /etc/cron.weekly
+for i in ${VARIABLES[@]}; do
+    sed "s/${PREFIX}_${i}_${SUFFIX}/${!i}/g" generate-dump > generate-dump
+done
+
+chmod +x generate-dump

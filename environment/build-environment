@@ -34,10 +34,13 @@ rm amazon-ssm-agent.deb
 systemctl enable amazon-ssm-agent
 systemctl start amazon-ssm-agent
 
+mkdir dumps
 mkdir -p certificates/web
 mkdir -p certificates/api
 mkdir -p front/static_files
 mkdir logs
+
+chown -R ubuntu:ubuntu $(pwd)
 
 # entrypoint_deploy command
 cp environment/entrypoint_deploy /usr/bin/

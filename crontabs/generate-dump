@@ -1,0 +1,14 @@
+#!/bin/bash
+# Crontab: 0 0 * * 0 
+
+source /etc/environment
+
+DB=INSTALL_DB_NAME
+ENV=INSTALL_ENV_NAME
+
+DATE=$(date +%Y%m%d)
+FILE_NAME=fonmon-${ENV}-${DATE}
+FILE_PATH=${HOME_FONMON}/dumps/${FILE_NAME}.sql
+
+docker exec -it fondo_db pg_dump $DB -Ufondouser > $FILE_PATH
+chown ubuntu:ubuntu $FILE_PATH
