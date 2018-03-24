@@ -17,7 +17,7 @@ cp generate-dump /etc/cron.weekly/
 
 cd /etc/cron.weekly
 for i in ${VARIABLES[@]}; do
-    sed "s/${PREFIX}_${i}_${SUFFIX}/${!i}/g" generate-dump > generate-dump
+    sed -i "s/${PREFIX}_${i}_${SUFFIX}/${!i}/g" generate-dump
 done
 
 chmod +x generate-dump
