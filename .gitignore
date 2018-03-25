@@ -5,3 +5,4 @@ static_files/
 logs/
 front/
 dumps/
+.env

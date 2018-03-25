@@ -34,6 +34,8 @@ rm amazon-ssm-agent.deb
 systemctl enable amazon-ssm-agent
 systemctl start amazon-ssm-agent
 
+cp deploy/.env.base deploy/.env
+
 mkdir dumps
 mkdir -p certificates/web
 mkdir -p certificates/api
