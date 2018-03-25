@@ -5,7 +5,3 @@ static_files/
 logs/
 front/
 dumps/
-
-# .env -> if a new value will be added, the line below should be commented and then uncommented.
-# Due on server this file is modified and sometimes there are problems with the update of scripts.
-deploy/.env
