@@ -10,5 +10,5 @@ DATE=$(date +%Y%m%d)
 FILE_NAME=fonmon-${ENV}-${DATE}
 FILE_PATH=${HOME_FONMON}/dumps/${FILE_NAME}.sql
 
-docker exec -it fondo_db pg_dump $DB -Ufondouser > $FILE_PATH
+docker exec -t fondo_db pg_dump $DB -Ufondouser > $FILE_PATH
 chown ubuntu:ubuntu $FILE_PATH
