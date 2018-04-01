@@ -3,7 +3,7 @@
 
 source /etc/environment
 
-docker stop fondo_web
+# docker stop fondo_web
 
 cd $(find /etc/letsencrypt/live/* -type d -name "*api*")
 cp *.pem $HOME_FONMON/certificates/api
