@@ -1,28 +1,65 @@
 #!/bin/bash
 
-if [ $# -ne 2 ]; then
-    echo 'Arguments: db_name environment'
-    exit 1
-fi
+# options:
+#  -a --all: install all crontab scripts
+#  -d --dump: install dump script
+#  -c --certificate: install certificates script
+OPTS=`getopt -o adch \\
+    -l all,dump,certificate,help \\
+    -n 'install_crontabs' -- "$@"`
 
-DB=$1
-ENV=$2
+if [ $? != 0 ]; then exit 1; fi
+
+DUMP=false
+CERTIFICATE=false
+
+DB=
+ENV=
+
+while true; do
+    case $1 in 
+        -a | --all)
+            echo "Installing all scripts"
+            DUMP=true; CERTIFICATE=true; shift
+            DB=$1; shift
+            ENV=$1; break
+            ;;
+        -d | --dump)
+            echo "Installing dump script"
+            DUMP=true; shift
+            DB=$1; shift
+            ENV=$1; shift
+            ;;
+        -c | --certificate)
+            echo "Installing certificate script"
+            CERTIFICATE=true; shift
+            ;;
+        *)
+            break; exit 1
+            ;;
+    esac
+done
 
 PREFIX=INSTALL
 SUFFIX=NAME
 VARIABLES=( DB ENV )
 
-# Copying crontab scripts
-cp generate-dump /etc/cron.weekly/
-cp renew-certificates /etc/letsencrypt/renewal-hooks/deploy
+if [ $DUMP = true ]; then
+    if [ -z $DB ] || [ -z $ENV ]; then
+        echo "bad arguments. Usage: { ( -a | --all ) || ( -d | --dump ) } <db_name> <environment>"
+        exit 1
+    fi
+    cp generate-dump /etc/cron.weekly/
 
-# setup dump script
-cd /etc/cron.weekly
-for i in ${VARIABLES[@]}; do
-    sed -i "s/${PREFIX}_${i}_${SUFFIX}/${!i}/g" generate-dump
-done
-chmod +x generate-dump
+    cd /etc/cron.weekly
+    for i in ${VARIABLES[@]}; do
+        sed -i "s/${PREFIX}_${i}_${SUFFIX}/${!i}/g" generate-dump
+    done
+    chmod +x generate-dump
+fi
+if [ $CERTIFICATE = true ]; then
+    cp renew-certificates /etc/letsencrypt/renewal-hooks/deploy
 
-# setup renew certificates script
-echo "0 5 1 * * root certbot renew --pre-hook \"docker stop fondo_web\" --post-hook \"docker start fondo_web\" " >> /etc/crontab
-chmod +x /etc/letsencrypt/renewal-hooks/deploy/renew-certificates
+    echo "0 5 1 * * root certbot renew --pre-hook \"docker stop fondo_web\" --post-hook \"docker start fondo_web\" " >> /etc/crontab
+    chmod +x /etc/letsencrypt/renewal-hooks/deploy/renew-certificates
+fi
