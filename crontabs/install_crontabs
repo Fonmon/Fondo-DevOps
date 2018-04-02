@@ -35,7 +35,7 @@ while true; do
             CERTIFICATE=true; shift
             ;;
         *)
-            break; exit 1
+            break
             ;;
     esac
 done
@@ -45,7 +45,7 @@ SUFFIX=NAME
 VARIABLES=( DB ENV )
 
 if [ $DUMP = true ]; then
-    if [ -z $DB ] || [ -z $ENV ]; then
+    if [ -z $DB ] || [ -z $ENV ] || [[ $DB = *"-"* ]] || [[ $ENV = *"-"* ]]; then
         echo "bad arguments. Usage: { ( -a | --all ) || ( -d | --dump ) } <db_name> <environment>"
         exit 1
     fi
