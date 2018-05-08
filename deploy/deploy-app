@@ -11,8 +11,8 @@ set -x
 # 3: env
 
 if [ $# -ne 3 ]; then
-	echo 'Arguments: commit_revision {web|api} {master|develop}'
-	exit 1
+    echo 'Arguments: commit_revision {web|api} {master|develop}'
+    exit 1
 fi
 
 source /etc/environment
@@ -25,25 +25,25 @@ ENV=$3
 echo "Deploying ${LAYER} with commit: ${COMMIT}"
 
 if [ $LAYER == 'api' ]; then
-	ACTUAL_CONTAINER_NAME=fondo_api
-	ARTIFACT_URI="https://github.com/Fonmon/Fondo-API/archive/${COMMIT}.zip"
+    ACTUAL_CONTAINER_NAME=fondo_api
+    ARTIFACT_URI="https://github.com/Fonmon/Fondo-API/archive/${COMMIT}.zip"
 fi
 
 if [ $LAYER == 'web' ]; then
-	ACTUAL_CONTAINER_NAME=fondo_web
-	ARTIFACT_URI="https://github.com/Fonmon/Fondo-Web/archive/${COMMIT}.zip"
+    ACTUAL_CONTAINER_NAME=fondo_web
+    ARTIFACT_URI="https://github.com/Fonmon/Fondo-Web/archive/${COMMIT}.zip"
 fi
 
 if [ "$(docker ps -a -q -f name=$ACTUAL_CONTAINER_NAME)" ]; then
-	echo "stopping fondo_${LAYER}"
-	docker stop $ACTUAL_CONTAINER_NAME && \
-	docker rm $ACTUAL_CONTAINER_NAME
+    echo "stopping fondo_${LAYER}"
+    docker stop $ACTUAL_CONTAINER_NAME && \
+    docker rm $ACTUAL_CONTAINER_NAME
 fi
 
 if [ $ENV == 'master' ]; then
-	HOST_APP=api-fonmon.minagle.com
+    HOST_APP=api-fonmon.minagle.com
 else
-	HOST_APP=dev-api-fonmon.minagle.com
+    HOST_APP=dev-api-fonmon.minagle.com
 fi
 
 wget $ARTIFACT_URI && \

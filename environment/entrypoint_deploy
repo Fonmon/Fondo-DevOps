@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if [ $# -ne 3 ]; then
-	echo 'Arguments: commit_revision {web|api} {master|develop}'
-	exit 1
+    echo 'Arguments: commit_revision {web|api} {master|develop}'
+    exit 1
 fi
 
 source /etc/environment
