@@ -1,0 +1,36 @@
+#!/bin/bash
+
+#set -x
+
+source '../.version'
+source /etc/environment
+
+if [ $# -ne 2 ]; then
+    echo 'Arguments: {master|develop} {web|api}'
+    exit 1
+fi
+
+ENV=$1
+LAYER=$2
+
+VAR_NAME="$1_$2"
+CUR_VERSION="${!VAR_NAME}"
+
+if [ -z $CUR_VERSION ]; then
+    echo 'Error: version does not exist in current conf'
+    exit 1
+fi
+
+BUMP=
+
+if [ $ENV == 'master' ]; then
+    BUMP='minor'
+else
+    BUMP='patch'
+fi
+
+NEXT_VERSION=$(semver bump ${BUMP} ${CUR_VERSION})
+
+sed -i "/${VAR_NAME}/c\export ${VAR_NAME}=${NEXT_VERSION}" $HOME_FONMON/.version
+
+echo ${NEXT_VERSION}

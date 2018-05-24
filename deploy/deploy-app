@@ -46,13 +46,13 @@ else
     HOST_APP=dev-api-fonmon.minagle.com
 fi
 
+CONTAINER_ID=$(./utils/versioning ${ENV} ${LAYER})
+
 wget $ARTIFACT_URI && \
 unzip ${COMMIT}.zip && \
 rm ${COMMIT}.zip
 
 cd Fondo-*${COMMIT}
-
-CONTAINER_ID=$(date +%Y%m%d%H%M)
 
 echo "Creating docker image and container with suffix: ${CONTAINER_ID}"
 bash container/build-docker $CONTAINER_ID $HOST_APP && \
@@ -62,4 +62,6 @@ cd ..
 rm -rf Fondo-*${COMMIT}
 
 echo "Finish deploy ${LAYER} layer"
+
+# TODO: make commit by FonmonBot for versioning
 exit 0
