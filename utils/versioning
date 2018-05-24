@@ -21,16 +21,17 @@ if [ -z $CUR_VERSION ]; then
     exit 1
 fi
 
-BUMP=
+BUMP='patch'
 
 if [ $ENV == 'master' ]; then
     BUMP='minor'
-else
-    BUMP='patch'
 fi
 
 NEXT_VERSION=$(semver bump ${BUMP} ${CUR_VERSION})
 
 sed -i "/${VAR_NAME}/c\export ${VAR_NAME}=${NEXT_VERSION}" $HOME_FONMON/.version
+if [ $ENV == 'master' ]; then
+    sed -i "/develop_${LAYER}/c\export develop_${LAYER}=${NEXT_VERSION}" $HOME_FONMON/.version
+fi
 
 echo ${NEXT_VERSION}
