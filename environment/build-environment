@@ -48,6 +48,12 @@ chown -R ubuntu:ubuntu $(pwd)
 cp environment/entrypoint_deploy /usr/bin/
 chmod +x /usr/bin/entrypoint_deploy
 
+# semver tool
+git clone https://github.com/fsaintjacques/semver-tool.git && \
+    cd semver-tool && \
+    make install && \
+    cd .. && rm -rf semver-tool
+
 # build network for containers
 docker network create \
 	--scope=local \
