@@ -16,7 +16,7 @@ if [ $# -ne 3 ]; then
 fi
 
 source /etc/environment
-cd $HOME_FONMON
+cd $HOME_FONMON/deploy
 
 COMMIT=$1
 LAYER=$2
@@ -27,39 +27,39 @@ echo "Deploying ${LAYER} with commit: ${COMMIT}"
 if [ $LAYER == 'api' ]; then
     ACTUAL_CONTAINER_NAME=fondo_api
     ARTIFACT_URI="https://github.com/Fonmon/Fondo-API/archive/${COMMIT}.zip"
+    SUFFIX_PROJ="API"
+    mkdir Fondo-Web
 fi
 
 if [ $LAYER == 'web' ]; then
     ACTUAL_CONTAINER_NAME=fondo_web
     ARTIFACT_URI="https://github.com/Fonmon/Fondo-Web/archive/${COMMIT}.zip"
+    SUFFIX_PROJ="Web"
+    mkdir Fondo-API
 fi
 
 if [ "$(docker ps -a -q -f name=$ACTUAL_CONTAINER_NAME)" ]; then
     echo "stopping fondo_${LAYER}"
     docker stop $ACTUAL_CONTAINER_NAME && \
-    docker rm $ACTUAL_CONTAINER_NAME
+        docker rm $ACTUAL_CONTAINER_NAME
 fi
 
-if [ $ENV == 'master' ]; then
-    HOST_APP=api-fonmon.minagle.com
-else
-    HOST_APP=dev-api-fonmon.minagle.com
-fi
+export IMAGE_TAG=$(./../utils/versioning ${ENV} ${LAYER})
 
-CONTAINER_ID=$(./utils/versioning ${ENV} ${LAYER})
 
 wget $ARTIFACT_URI && \
-unzip ${COMMIT}.zip && \
-rm ${COMMIT}.zip
+    unzip ${COMMIT}.zip && \
+    rm ${COMMIT}.zip
 
-cd Fondo-*${COMMIT}
 
-echo "Creating docker image and container with suffix: ${CONTAINER_ID}"
-bash container/build-docker $CONTAINER_ID $HOST_APP && \
-bash container/run-docker $CONTAINER_ID 
+mv Fondo-${SUFFIX_PROJ}-${COMMIT} Fondo-${SUFFIX_PROJ}
 
-cd ..
-rm -rf Fondo-*${COMMIT}
+echo "Creating docker image and container for version: ${IMAGE_TAG}"
+
+docker-compose build --no-cache ${LAYER} && \
+    docker-compose run -d --name ${ACTUAL_CONTAINER_NAME} ${LAYER}
+
+rm -rf Fondo-*
 
 echo "Finish deploy ${LAYER} layer"
 

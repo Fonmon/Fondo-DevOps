@@ -1,8 +1,8 @@
 Fondo-API/
 Fondo-Web/
 certificates/
-static_files/
 logs/
 front/
 dumps/
 .env
+migrations/
