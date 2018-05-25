@@ -4,13 +4,21 @@
 # Script to build prod like env    #
 ####################################
 
-cd /home/ubuntu/Fondo-DevOps/
+if [ $# -ne 2 ]; then
+    echo 'Arguments: linux_user linux_group'
+    exit 1
+fi
+
+USER=$1
+GROUP=$2
+
+cd /home/$USER/Fondo-DevOps/
 echo "export HOME_FONMON=$(pwd)" >> /etc/environment
 
 # docker install
 if [ !"$(which docker)" ]; then
 	curl -sSL https://get.docker.com/ | sh
-	usermod -aG docker ubuntu
+	usermod -aG docker ${USER}
 fi
 
 # docker-compose install
@@ -37,12 +45,13 @@ systemctl start amazon-ssm-agent
 cp deploy/.env.base deploy/.env
 
 mkdir dumps
+mkdir migrations
 mkdir -p certificates/web
 mkdir -p certificates/api
 mkdir -p front/static_files
 mkdir logs
 
-chown -R ubuntu:ubuntu $(pwd)
+chown -R ${USER}:${GROUP} $(pwd)
 
 # entrypoint_deploy command
 cp environment/entrypoint_deploy /usr/bin/
