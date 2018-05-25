@@ -1,10 +1,6 @@
-version: '2'
-networks:
-  default:
-    external:
-      name: fondo_network
+version: '2.3'
 services:
-  fondodb:
+  db:
     image: postgres
     container_name: fondo_db
     environment:
@@ -13,3 +9,35 @@ services:
       POSTGRES_DB: ${POSTGRES_DATABASE}
     expose:
       - 5432
+  api:
+    build:
+      context: Fondo-API/
+      dockerfile: 
+    image: fonapi_image:$IMAGE_TAG
+    depends_on:
+      - db
+    env_file: .env
+    container_name: fondo_api
+    expose:
+      - 8443
+  web:
+    build:
+      context: Fondo-Web/
+      dockerfile: 
+      args:
+        HOST_APP: ${ALLOWED_HOST_DOMAIN}
+    image: fonweb_image:$IMAGE_TAG
+    container_name: fondo_web
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - type: bind
+        source: $(pwd)/front/static_files/
+        target: /usr/share/nginx/html/static_files
+      - type: bind
+        source: $(pwd)/certificates/web/
+        target: /etc/nginx/certs/web
+      - type: bind
+        source: $(pwd)/certificates/api/
+        target: /etc/nginx/certs/api

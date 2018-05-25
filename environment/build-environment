@@ -55,11 +55,7 @@ git clone https://github.com/fsaintjacques/semver-tool.git && \
     cd .. && rm -rf semver-tool
 
 # build network for containers
-docker network create \
-	--scope=local \
-	--driver=bridge \
-	fondo_network
-
-# start running db
-cd deploy
-docker-compose up -d
+#docker network create \
+#	--scope=local \
+#	--driver=bridge \
+#	fondo_network
