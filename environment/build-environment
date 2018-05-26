@@ -63,6 +63,9 @@ git clone https://github.com/fsaintjacques/semver-tool.git && \
     make install && \
     cd .. && rm -rf semver-tool
 
+# TODO: add verification if swap file or partition exist, otherwhise
+# create a file and make it a swapfile
+
 #build network for containers
 docker network create \
 	--scope=local \
