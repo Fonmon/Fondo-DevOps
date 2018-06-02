@@ -28,7 +28,7 @@ if [ -z "$(which docker-compose)" ]; then
 fi
 
 # certbot install
-apt-get install -y software-properties-common unzip python3
+apt-get install -y software-properties-common unzip python3 make
 add-apt-repository ppa:certbot/certbot -y
 apt-get update
 apt-get install -y certbot
