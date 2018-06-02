@@ -55,7 +55,7 @@ mv Fondo-${SUFFIX_PROJ}-${COMMIT} Fondo-${SUFFIX_PROJ}
 echo "Creating docker image and container for version: ${IMAGE_TAG}"
 
 docker-compose build --no-cache ${LAYER} && \
-    docker-compose run -d --name ${ACTUAL_CONTAINER_NAME} ${LAYER}
+    docker-compose run -d --service-ports --name ${ACTUAL_CONTAINER_NAME} ${LAYER}
 
 rm -rf Fondo-*
 
