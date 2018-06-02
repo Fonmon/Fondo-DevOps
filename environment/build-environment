@@ -69,8 +69,8 @@ git clone https://github.com/fsaintjacques/semver-tool.git && \
 # create a file and make it a swapfile
 
 # FonmonBot Git user
-git config --global user.name "FonmonBot"
-git config --global user.email fondomontanez@gmail.com
+git config user.name "FonmonBot"
+git config user.email fondomontanez@gmail.com
 
 # build network for containers
 docker network create \
