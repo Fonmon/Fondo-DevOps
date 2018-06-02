@@ -15,6 +15,8 @@ GROUP=$2
 cd /home/$USER/Fondo-DevOps/
 echo "export HOME_FONMON=$(pwd)" >> /etc/environment
 
+git remote set-url origin git@github.com:Fonmon/Fondo-DevOps.git
+
 # docker install
 if [ -z "$(which docker)" ]; then
 	curl -sSL https://get.docker.com/ | sh
@@ -66,7 +68,11 @@ git clone https://github.com/fsaintjacques/semver-tool.git && \
 # TODO: add verification if swap file or partition exist, otherwhise
 # create a file and make it a swapfile
 
-#build network for containers
+# FonmonBot Git user
+git config --global user.name "FonmonBot"
+git config --global user.email fondomontanez@gmail.com
+
+# build network for containers
 docker network create \
 	--scope=local \
 	--driver=bridge \

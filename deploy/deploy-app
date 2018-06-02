@@ -46,11 +46,9 @@ fi
 
 export IMAGE_TAG=$(./../utils/versioning ${ENV} ${LAYER})
 
-
 wget $ARTIFACT_URI && \
     unzip ${COMMIT}.zip && \
     rm ${COMMIT}.zip
-
 
 mv Fondo-${SUFFIX_PROJ}-${COMMIT} Fondo-${SUFFIX_PROJ}
 
@@ -63,5 +61,8 @@ rm -rf Fondo-*
 
 echo "Finish deploy ${LAYER} layer"
 
-# TODO: make commit by FonmonBot for versioning
+# FonmonBot commit (version)
+cd $HOME_FONMON
+git commit -am "FonmonBot: .version file update" && \
+    git push
 exit 0

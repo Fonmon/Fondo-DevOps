@@ -34,8 +34,8 @@ services:
         HOST_APP: ${ALLOWED_HOST_DOMAIN}
     image: fonweb_image:$IMAGE_TAG
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
+      - "443:443"
     volumes:
       - type: bind
         source: ../front/static_files/
