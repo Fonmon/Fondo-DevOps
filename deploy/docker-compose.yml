@@ -1,6 +1,7 @@
 version: '2.3'
 services:
   fondodb:
+    restart: always
     image: postgres
     container_name: fondo_db
     environment:
@@ -10,6 +11,7 @@ services:
     expose:
       - 5432
   api:
+    restart: always
     build:
       context: ./Fondo-API
       dockerfile: $PWD/dockerfiles/DockerfileApi
@@ -24,6 +26,7 @@ services:
         source: ../migrations/
         target: /app/fondo_api/migrations
   web:
+    restart: always
     build:
       context: ./Fondo-Web
       dockerfile: $PWD/dockerfiles/DockerfileWeb
