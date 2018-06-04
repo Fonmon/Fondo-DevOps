@@ -1,6 +1,8 @@
 #!/bin/bash
 # sudo crontab: 0 5 1 * *
 
+set -x
+
 source /etc/environment
 
 echo "Domain custom script: ${CERTBOT_DOMAIN}"
