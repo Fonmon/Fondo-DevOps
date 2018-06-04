@@ -38,12 +38,6 @@ if [ $LAYER == 'web' ]; then
     mkdir Fondo-API
 fi
 
-if [ "$(docker ps -a -q -f name=$ACTUAL_CONTAINER_NAME)" ]; then
-    echo "stopping fondo_${LAYER}"
-    docker stop $ACTUAL_CONTAINER_NAME && \
-        docker rm $ACTUAL_CONTAINER_NAME
-fi
-
 export IMAGE_TAG=$(./../utils/versioning ${ENV} ${LAYER})
 
 wget $ARTIFACT_URI && \
@@ -52,10 +46,17 @@ wget $ARTIFACT_URI && \
 
 mv Fondo-${SUFFIX_PROJ}-${COMMIT} Fondo-${SUFFIX_PROJ}
 
-echo "Creating docker image and container for version: ${IMAGE_TAG}"
+echo "Creating docker image for version: ${IMAGE_TAG}"
+docker-compose build --no-cache ${LAYER}
 
-docker-compose build --no-cache ${LAYER} && \
-    docker-compose run -d --service-ports --name ${ACTUAL_CONTAINER_NAME} ${LAYER}
+if [ "$(docker ps -a -q -f name=$ACTUAL_CONTAINER_NAME)" ]; then
+    echo "stopping fondo_${LAYER}"
+    docker stop $ACTUAL_CONTAINER_NAME && \
+        docker rm $ACTUAL_CONTAINER_NAME
+fi
+
+echo "Starting container"
+docker-compose run -d --service-ports --name ${ACTUAL_CONTAINER_NAME} ${LAYER}
 
 rm -rf Fondo-*
 
