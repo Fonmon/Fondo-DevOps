@@ -4,7 +4,7 @@ WORKDIR /app
 
 RUN apk update && \
     apk add postgresql-libs && \
-    apk add --virtual .build-deps gcc musl-dev postgresql-dev py3-cffi
+    apk add --virtual .build-deps gcc musl-dev postgresql-dev py3-cffi libffi-dev
 
 COPY requirements.txt .
 RUN pip install -r requirements.txt --no-cache-dir
