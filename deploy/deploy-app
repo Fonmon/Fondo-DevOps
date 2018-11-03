@@ -47,7 +47,7 @@ wget $ARTIFACT_URI && \
 mv Fondo-${SUFFIX_PROJ}-${COMMIT} Fondo-${SUFFIX_PROJ}
 
 echo "Creating docker image for version: ${IMAGE_TAG}"
-docker-compose build --no-cache ${LAYER}
+docker-compose build ${LAYER}
 
 if [ "$(docker ps -a -q -f name=$ACTUAL_CONTAINER_NAME)" ]; then
     echo "stopping fondo_${LAYER}"
