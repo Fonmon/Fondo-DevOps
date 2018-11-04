@@ -21,10 +21,6 @@ services:
     env_file: .env
     expose:
       - 8443
-    volumes:
-      - type: bind
-        source: ../migrations/
-        target: /app/fondo_api/migrations
   web:
     restart: always
     build:
