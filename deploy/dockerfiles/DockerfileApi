@@ -14,7 +14,6 @@ RUN apk --purge del .build-deps
 COPY . /app
 
 EXPOSE 8443
-EXPOSE 9902
 
 ENTRYPOINT ["/bin/sh", "scripts/run-server.sh"]
 CMD ["api"]

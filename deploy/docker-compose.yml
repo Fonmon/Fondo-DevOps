@@ -48,8 +48,6 @@ services:
     env_file: .env
     depends_on:
       - redis
-    expose:
-      - 9902
   redis:
     restart: always
     image: redis:alpine
