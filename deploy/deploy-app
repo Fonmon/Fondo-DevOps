@@ -11,7 +11,7 @@ set -x
 # 3: env
 
 if [ $# -ne 3 ]; then
-    echo 'Arguments: commit_revision {web|api} {master|develop}'
+    echo 'Arguments: commit_revision {web|api|mns} {master|develop}'
     exit 1
 fi
 
@@ -28,14 +28,21 @@ if [ $LAYER == 'api' ]; then
     ACTUAL_CONTAINER_NAME=fondo_api
     ARTIFACT_URI="https://github.com/Fonmon/Fondo-API/archive/${COMMIT}.zip"
     SUFFIX_PROJ="API"
-    mkdir Fondo-Web
+    mkdir Fondo-Web && mkdir Fondo-MNS
 fi
 
 if [ $LAYER == 'web' ]; then
     ACTUAL_CONTAINER_NAME=fondo_web
     ARTIFACT_URI="https://github.com/Fonmon/Fondo-Web/archive/${COMMIT}.zip"
     SUFFIX_PROJ="Web"
-    mkdir Fondo-API
+    mkdir Fondo-API && mkdir Fondo-MNS
+fi
+
+if [ $LAYER == 'mns' ]; then
+    ACTUAL_CONTAINER_NAME=fondo_mns
+    ARTIFACT_URI="https://github.com/Fonmon/Fondo-MNS/archive/${COMMIT}.zip"
+    SUFFIX_PROJ="MNS"
+    mkdir Fondo-API && mkdir Fondo-Web
 fi
 
 export IMAGE_TAG=$(./../utils/versioning ${ENV} ${LAYER})
@@ -57,6 +64,7 @@ fi
 
 echo "Starting container"
 docker-compose run -d --service-ports --name ${ACTUAL_CONTAINER_NAME} ${LAYER}
+
 if [ $LAYER == 'api' ]; then
     echo "deploy worker for api"
     if [ "$(docker ps -a -q -f name=fondo_api_worker)" ]; then
