@@ -58,6 +58,7 @@ fi
 echo "Starting container"
 docker-compose run -d --service-ports --name ${ACTUAL_CONTAINER_NAME} ${LAYER}
 if [ $LAYER == 'api' ]; then
+    echo "deploy worker for api"
     if [ "$(docker ps -a -q -f name=fondo_api_worker)" ]; then
         echo "stopping fondo_api_worker"
         docker stop fondo_api_worker && \
