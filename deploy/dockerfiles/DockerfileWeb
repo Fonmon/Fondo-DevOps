@@ -9,16 +9,18 @@ ARG HOST_APP
 
 ENV HOST_API_URL=${HOST_APP}
 
+EXPOSE 80 443
+
+COPY package.json .
+RUN npm install --only=production
+
 COPY . /app
 RUN echo "export const HOST_APP = \"https://${HOST_APP}/\";" > src/utils/Constants.js
 
-RUN npm install
 RUN npm run build
 RUN cp -r build/* /usr/share/nginx/html
 
 # nginx resolv env variables
 RUN envsubst '$HOST_API_URL' < container/nginx.conf > /etc/nginx/nginx.conf
-
-EXPOSE 80 443
 
 CMD nginx -g 'daemon off;'
