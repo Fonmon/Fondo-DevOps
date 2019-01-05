@@ -15,10 +15,10 @@ resource "aws_instance" "server" {
     ami = "${data.aws_ami.latest_ubuntu.id}"
     instance_type = "${terraform.workspace == "dev" ? "t2.micro" : "t2.small"}"
     key_name = "${terraform.workspace == "dev" ? "develop-minagle" : "minagle"}"
-    security_groups = ["${aws_security_group.s_sg_app.id}", "${aws_security_group.s_sg_ssh.id}"]
+    vpc_security_group_ids = ["${aws_security_group.s_sg_app.id}", "${aws_security_group.s_sg_ssh.id}"]
 
     ebs_block_device {
-        device_name = "${local.env} main EBS"
+        device_name = "/dev/sda1"
         delete_on_termination = true
         volume_type = "gp2"
         volume_size = "${terraform.workspace == "dev" ? "10" : "12"}"
@@ -29,7 +29,7 @@ resource "aws_instance" "server" {
         inline = [
             "cd /home/ubuntu/Fondo-DevOps",
             "sudo git pull",
-            "sudo ./environment/provisioners/make_recover_pkg"
+            "sudo ./environment/provisioners/make_recover_pkg ${local.env}"
         ]
 
         connection {
@@ -44,6 +44,10 @@ resource "aws_instance" "server" {
     provisioner "local-exec" {
         when = "destroy"
         command = "scp ${local.ssh_target}:~/recovery_files_* ."
+    }
+
+    tags {
+        Name = "${local.env} Fonmon"
     }
 }
 
