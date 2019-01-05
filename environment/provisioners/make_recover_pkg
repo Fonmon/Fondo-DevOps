@@ -1,0 +1,25 @@
+#!/bin/bash
+source /etc/environment
+ENV=${1:-none}
+
+# Run as admin
+cd /home/ubuntu
+
+mkdir recovery_files && cd recovery_files
+
+mkdir letsencrypt
+cp -r /etc/letsencrypt/accounts /etc/letsencrypt/archive /etc/letsencrypt/live /etc/letsencrypt/renewal letsencrypt
+
+mkdir fonmon
+cp -r $HOME_FONMON/front \
+      $HOME_FONMON/dumps \
+      $HOME_FONMON/logs \
+      $HOME_FONMON/deploy/.env \
+      fonmon
+
+cd ..
+
+DATE=$(date +%Y%m%d)
+tar -czf recovery_files_${ENV}_${DATE}.tar.gz recovery_files/
+chmod 666 recovery_files_${ENV}_${DATE}.tar.gz
+rm -rf recovery_files

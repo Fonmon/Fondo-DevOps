@@ -1,8 +1,13 @@
 Fondo-API/
 Fondo-Web/
+Fondo-MNS/
 certificates/
 logs/
 front/
 dumps/
 .env
-migrations/
+
+# Terraform
+*.tfvars
+.terraform/
+*.tfstate.d/

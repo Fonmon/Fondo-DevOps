@@ -1,0 +1,127 @@
+locals {
+    env = "${terraform.workspace == "dev" ? "Dev" : "Prod"}"
+    ssh_target = "${terraform.workspace == "dev" ? "dev-minagle" : "minagle"}"
+}
+
+provider "aws" {
+    access_key = "${var.access_key}"
+    secret_key = "${var.secret_key}"
+    region = "${var.region}"
+}
+
+resource "aws_instance" "server" {
+    count = "${var.num_instances}"
+
+    ami = "${data.aws_ami.latest_ubuntu.id}"
+    instance_type = "${terraform.workspace == "dev" ? "t2.micro" : "t2.small"}"
+    key_name = "${terraform.workspace == "dev" ? "develop-minagle" : "minagle"}"
+    security_groups = ["${aws_security_group.s_sg_app.id}", "${aws_security_group.s_sg_ssh.id}"]
+
+    ebs_block_device {
+        device_name = "${local.env} main EBS"
+        delete_on_termination = true
+        volume_type = "gp2"
+        volume_size = "${terraform.workspace == "dev" ? "10" : "12"}"
+    }
+
+    provisioner "remote-exec" {
+        when = "destroy"
+        inline = [
+            "cd /home/ubuntu/Fondo-DevOps",
+            "sudo git pull",
+            "sudo ./environment/provisioners/make_recover_pkg"
+        ]
+
+        connection {
+            type = "ssh"
+            agent = false
+            host = "${self.public_dns}"
+            user = "ubuntu"
+            private_key = "${file("~/.ssh/${local.ssh_target}.pem")}"
+        }
+    }
+
+    provisioner "local-exec" {
+        when = "destroy"
+        command = "scp ${local.ssh_target}:~/recovery_files_* ."
+    }
+}
+
+resource "aws_eip" "s_eip" {
+    instance = "${aws_instance.server.id}"
+    tags {
+        Name = "${local.env} Fonmon"
+    }
+}
+
+resource "aws_security_group" "s_sg_app" {
+    name = "fonmon-sg"
+    description = "Security group for Fonmon application"
+    vpc_id = "${data.aws_vpc.default.id}"
+
+    ingress {
+        from_port = 80
+        to_port = 80
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    ingress {
+        from_port = 443
+        to_port = 443
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    tags {
+        Name = "APP Fonmon"
+    }
+}
+
+resource "aws_security_group" "s_sg_ssh" {
+    name = "ssh-sg"
+    description = "Security group for ssh connections"
+    vpc_id = "${data.aws_vpc.default.id}"
+
+    ingress {
+        from_port = 22
+        to_port = 22
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    tags {
+        Name = "SSH Connections"
+    }
+}
+
+data "aws_ami" "latest_ubuntu" {
+    most_recent = true
+    owners = ["099720109477"] # Canonical
+
+    filter {
+        name = "name"
+        values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
+    }
+    filter {
+        name = "virtualization-type"
+        values = ["hvm"]
+    }
+}
+
+data "aws_vpc" "default" {
+    default = true
+}
