@@ -25,7 +25,7 @@ fi
 
 # docker-compose install
 if [ -z "$(which docker-compose)" ]; then
-	curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+	curl -L https://github.com/docker/compose/releases/download/1.23.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 	chmod +x /usr/local/bin/docker-compose
 fi
 
@@ -55,7 +55,7 @@ mkdir logs
 chown -R ${USER}:${GROUP} $(pwd)
 
 # entrypoint_deploy command
-cp environment/entrypoint_deploy /usr/bin/
+cp environment/scripts/entrypoint_deploy /usr/bin/
 chmod +x /usr/bin/entrypoint_deploy
 
 # semver tool
@@ -64,8 +64,14 @@ git clone https://github.com/fsaintjacques/semver-tool.git && \
     make install && \
     cd .. && rm -rf semver-tool
 
-# TODO: add verification if swap file or partition exist, otherwhise
 # create a file and make it a swapfile
+if [ -z "$(find / -maxdepth 1 -name 'swapfile')" ]; then
+    fallocate --length 2GiB /swapfile
+    chmod 600 /swapfile
+    mkswap /swapfile
+    swapon /swapfile
+    echo "/swapfile none swap defaults 0 0" >> /etc/fstab
+fi
 
 # FonmonBot Git user
 git config user.name "FonmonBot"

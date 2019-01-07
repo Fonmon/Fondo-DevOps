@@ -1,6 +1,12 @@
 locals {
     env = "${terraform.workspace == "dev" ? "Dev" : "Prod"}"
     ssh_target = "${terraform.workspace == "dev" ? "dev-minagle" : "minagle"}"
+    s_connection = {
+        type = "ssh"
+        agent = "false"
+        user = "ubuntu"
+        private_key = "${file("~/.ssh/${local.ssh_target}.pem")}"
+    }
 }
 
 provider "aws" {
@@ -24,6 +30,36 @@ resource "aws_instance" "server" {
         volume_size = "${terraform.workspace == "dev" ? "10" : "12"}"
     }
 
+    provisioner "file" {
+        source = "~/.ssh/git_fonmonbot/id_rsa"
+        destination = "/home/ubuntu/.ssh/id_rsa"
+
+        connection {
+            type = "${local.s_connection["type"]}"
+            agent = "${local.s_connection["agent"]}"
+            host = "${self.public_dns}"
+            user = "${local.s_connection["user"]}"
+            private_key = "${local.s_connection["private_key"]}"
+        }
+    }
+
+    provisioner "remote-exec" {
+        inline = [
+            "cd ~",
+            "sudo cp .ssh/id_rsa /root/.ssh/",
+            "git clone https://github.com/Fonmon/Fondo-DevOps.git",
+            "sudo ./Fondo-DevOps/environment/provisioners/build_env ubuntu ubuntu"
+        ]
+
+        connection {
+            type = "${local.s_connection["type"]}"
+            agent = "${local.s_connection["agent"]}"
+            host = "${self.public_dns}"
+            user = "${local.s_connection["user"]}"
+            private_key = "${local.s_connection["private_key"]}"
+        }
+    }
+
     provisioner "remote-exec" {
         when = "destroy"
         inline = [
@@ -33,11 +69,11 @@ resource "aws_instance" "server" {
         ]
 
         connection {
-            type = "ssh"
-            agent = false
+            type = "${local.s_connection["type"]}"
+            agent = "${local.s_connection["agent"]}"
             host = "${self.public_dns}"
-            user = "ubuntu"
-            private_key = "${file("~/.ssh/${local.ssh_target}.pem")}"
+            user = "${local.s_connection["user"]}"
+            private_key = "${local.s_connection["private_key"]}"
         }
     }
 
