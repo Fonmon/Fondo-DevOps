@@ -27,6 +27,11 @@ resource "aws_instance" "server" {
         delete_on_termination = true
         volume_type = "gp2"
         volume_size = "${terraform.workspace == "dev" ? "10" : "12"}"
+
+    }
+
+    volume_tags {
+        Name = "${local.env} Fonmon"
     }
 
     provisioner "file" {
