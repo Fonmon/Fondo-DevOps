@@ -6,6 +6,7 @@ logs/
 front/
 dumps/
 .env
+recovery_files_*.tar.gz
 
 # Terraform
 *.tfvars

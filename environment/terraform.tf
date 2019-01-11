@@ -23,8 +23,7 @@ resource "aws_instance" "server" {
     key_name = "${terraform.workspace == "dev" ? "develop-minagle" : "minagle"}"
     vpc_security_group_ids = ["${aws_security_group.s_sg_app.id}", "${aws_security_group.s_sg_ssh.id}"]
 
-    ebs_block_device {
-        device_name = "/dev/sda1"
+    root_block_device {
         delete_on_termination = true
         volume_type = "gp2"
         volume_size = "${terraform.workspace == "dev" ? "10" : "12"}"
@@ -43,10 +42,24 @@ resource "aws_instance" "server" {
         }
     }
 
+    provisioner "file" {
+        source = "provisioners/config_git_ssh"
+        destination = "/home/ubuntu/.ssh/config"
+
+        connection {
+            type = "${local.s_connection["type"]}"
+            agent = "${local.s_connection["agent"]}"
+            host = "${self.public_dns}"
+            user = "${local.s_connection["user"]}"
+            private_key = "${local.s_connection["private_key"]}"
+        }
+    }
+
     provisioner "remote-exec" {
         inline = [
             "cd ~",
-            "sudo cp .ssh/id_rsa /root/.ssh/",
+            "chmod 400 .ssh/id_rsa .ssh/config",
+            "sudo cp .ssh/id_rsa .ssh/config /root/.ssh/",
             "git clone https://github.com/Fonmon/Fondo-DevOps.git",
             "sudo ./Fondo-DevOps/environment/provisioners/build_env ubuntu ubuntu"
         ]

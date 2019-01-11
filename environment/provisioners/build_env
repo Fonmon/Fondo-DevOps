@@ -35,16 +35,6 @@ add-apt-repository ppa:certbot/certbot -y
 apt-get update
 apt-get install -y certbot
 
-# It is already installed for AMIs with identifier of 20180627 or later
-# ssm agent for ec2
-# mkdir -p /tmp/ssm
-# wget https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/debian_amd64/amazon-ssm-agent.deb
-# dpkg -i amazon-ssm-agent.deb
-# rm amazon-ssm-agent.deb
-
-systemctl enable amazon-ssm-agent
-systemctl start amazon-ssm-agent
-
 cp deploy/.env.base deploy/.env
 
 mkdir dumps
