@@ -22,6 +22,7 @@ resource "aws_instance" "server" {
     instance_type = "${terraform.workspace == "dev" ? "t2.micro" : "t2.small"}"
     key_name = "${terraform.workspace == "dev" ? "develop-minagle" : "minagle"}"
     vpc_security_group_ids = ["${aws_security_group.s_sg_app.id}", "${aws_security_group.s_sg_ssh.id}"]
+    iam_instance_profile = "${data.aws_iam_instance_profile.s_ssm_role.name}"
 
     root_block_device {
         delete_on_termination = true
@@ -182,4 +183,8 @@ data "aws_ami" "latest_ubuntu" {
 
 data "aws_vpc" "default" {
     default = true
+}
+
+data "aws_iam_instance_profile" "s_ssm_role" {
+    name = "SystemsManager"
 }
