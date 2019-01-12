@@ -73,3 +73,6 @@ docker network create \
 	--scope=local \
 	--driver=bridge \
 	fondo_network
+
+# dhparam
+# openssl dhparam -out certificates/web/dhparam.pem 2048
