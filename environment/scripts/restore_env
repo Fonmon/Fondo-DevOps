@@ -1,0 +1,40 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+    echo 'Arguments: recovery_file'
+    exit 1
+fi
+
+source /etc/environment
+
+RECOVERY_FILE=$1
+cd $HOME_FONMON
+
+tar -xzf $RECOVERY_FILE
+
+# letsencrypt
+cp -r recovery_files/letsencrypt/* /etc/letsencrypt
+
+cd $(find /etc/letsencrypt/live/* -type d -name "*api*")
+cp *.pem $HOME_FONMON/certificates/api
+
+cd $(find /etc/letsencrypt/live/* -type d ! -name "*api*")
+cp *.pem $HOME_FONMON/certificates/web
+
+chown -R ubuntu:ubuntu $HOME_FONMON/certificates
+
+# Fonmon files
+cp recovery_files/fonmon/.env deploy/
+cp -r recovery_files/fonmon/front/* front/
+
+# Restore DB
+DUMPS=($(ls recovery_files/fonmon/dumps/ | sort -r))
+DUMP_DB=${DUMPS[0]}
+
+cd deploy/
+source .env
+docker-compose run -d fondodb && \
+    docker exec -t fondo_db psql -Ufondouser -d $POSTGRES_DATABASE < $DUMP_DB
+
+# Tear down
+cd $HOME_FONMON && rm -rf recovery_files $RECOVERY_FILE
