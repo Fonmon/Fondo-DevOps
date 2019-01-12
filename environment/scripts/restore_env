@@ -35,8 +35,11 @@ DUMP_DB=${DUMPS[0]}
 
 cd deploy/
 source .env
+
+mkdir Fondo-API Fondo-Web Fondo-MNS
 docker-compose run -d fondodb && \
     docker exec -t fondo_db psql -Ufondouser -d $POSTGRES_DATABASE < $DUMP_DB
 
 # Tear down
 cd $HOME_FONMON && rm -rf recovery_files $RECOVERY_FILE
+rm -rf deploy/Fondo-API deploy/Fondo-Web deploy/Fondo-MNS
