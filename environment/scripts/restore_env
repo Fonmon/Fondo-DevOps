@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 if [ $# -ne 1 ]; then
     echo 'Arguments: recovery_file'
     exit 1
@@ -14,6 +16,8 @@ tar -xzf $RECOVERY_FILE
 
 # letsencrypt
 cp -r recovery_files/letsencrypt/* /etc/letsencrypt
+
+chown -R root:root /etc/letsencrypt
 
 cd $(find /etc/letsencrypt/live/* -type d -name "*api*")
 cp *.pem $HOME_FONMON/certificates/api
