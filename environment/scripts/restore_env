@@ -31,13 +31,13 @@ cp -r recovery_files/fonmon/front/* front/
 
 # Restore DB
 DUMPS=($(ls recovery_files/fonmon/dumps/ | sort -r))
-DUMP_DB=${DUMPS[0]}
+DUMP_DB="$(pwd)/recovery_files/fonmon/dumps/${DUMPS[0]}"
 
 cd deploy/
 source .env
 
 mkdir Fondo-API Fondo-Web Fondo-MNS
-docker-compose run -d fondodb && \
+docker-compose run -d --name fondo_db fondodb && \
     docker exec -t fondo_db psql -Ufondouser -d $POSTGRES_DATABASE < $DUMP_DB
 
 # Tear down
