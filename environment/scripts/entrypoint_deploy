@@ -9,4 +9,4 @@ source /etc/environment
 
 cd $HOME_FONMON
 git pull origin master
-./deploy/deploy-app $1 $2 $3 >> logs/deploy.log
+./deploy/deploy-app $1 $2 $3 &>> logs/deploy.log
