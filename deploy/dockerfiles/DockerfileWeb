@@ -1,7 +1,7 @@
 FROM nginx:alpine
 
 RUN apk update && apk add ca-certificates && update-ca-certificates
-RUN apk add --no-cache nodejs
+RUN apk add --no-cache nodejs nodejs-npm
 RUN apk add --no-cache gettext
 
 WORKDIR /app
