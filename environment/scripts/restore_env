@@ -23,6 +23,8 @@ cp *.pem $HOME_FONMON/certificates/web
 
 chown -R ubuntu:ubuntu $HOME_FONMON/certificates
 
+cd $HOME_FONMON
+
 # Fonmon files
 cp recovery_files/fonmon/.env deploy/
 cp -r recovery_files/fonmon/front/* front/
