@@ -64,7 +64,5 @@ fi
 if [ $CERTIFICATE = true ]; then
     cd $HOME_FONMON/crontabs
     cp renew-certificates /etc/letsencrypt/renewal-hooks/deploy
-
-    echo "0 5 1 * * root certbot renew --pre-hook \"docker stop fondo_web\" --post-hook \"docker start fondo_web\" " >> /etc/crontab
     chmod +x /etc/letsencrypt/renewal-hooks/deploy/renew-certificates
 fi

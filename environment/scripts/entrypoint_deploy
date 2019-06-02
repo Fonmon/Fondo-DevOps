@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $# -ne 3 ]; then
-    echo 'Arguments: commit_revision {web|api} {master|develop}'
+    echo 'Arguments: commit_revision {web|api|mns} {master|develop}'
     exit 1
 fi
 
@@ -9,4 +9,5 @@ source /etc/environment
 
 cd $HOME_FONMON
 git pull origin master
-./deploy/deploy-app $1 $2 $3 &>> logs/deploy.log
+./deploy/deploy-app $1 $2 $3
+#&>> logs/deploy.log

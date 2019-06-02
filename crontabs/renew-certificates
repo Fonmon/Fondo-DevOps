@@ -6,7 +6,6 @@ set -x
 source /etc/environment
 
 echo "Domain custom script: ${CERTBOT_DOMAIN}"
-# docker stop fondo_web
 
 cd $(find /etc/letsencrypt/live/* -type d -name "*api*")
 cp *.pem $HOME_FONMON/certificates/api
@@ -15,5 +14,3 @@ cd $(find /etc/letsencrypt/live/* -type d ! -name "*api*")
 cp *.pem $HOME_FONMON/certificates/web
 
 chown -R ubuntu:ubuntu $HOME_FONMON/certificates
-
-# docker start fondo_web

@@ -4,13 +4,14 @@
 # Script to build prod like env    #
 ####################################
 
-if [ $# -ne 2 ]; then
-    echo 'Arguments: linux_user linux_group'
+if [ $# -ne 3 ]; then
+    echo 'Arguments: linux_user linux_group environment'
     exit 1
 fi
 
 USER=$1
 GROUP=$2
+ENV=$3
 
 cd /home/$USER/Fondo-DevOps/
 echo "export HOME_FONMON=$(pwd)" >> /etc/environment
@@ -25,9 +26,12 @@ fi
 
 # docker-compose install
 if [ -z "$(which docker-compose)" ]; then
-	curl -L https://github.com/docker/compose/releases/download/1.23.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+	curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 	chmod +x /usr/local/bin/docker-compose
 fi
+
+# install custom crontabs
+./crontabs/install_crontabs -a fondo${ENV} ${ENV}
 
 # certbot install
 apt-get install -y software-properties-common unzip python3 make
@@ -75,4 +79,5 @@ docker network create \
 	fondo_network
 
 # dhparam
-# openssl dhparam -out certificates/web/dhparam.pem 2048
+cd /home/$USER/Fondo-DevOps/
+openssl dhparam -out certificates/web/dhparam.pem 2048
