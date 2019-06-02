@@ -3,4 +3,4 @@ export master_api=1.10.0
 export master_mns=1.2.0
 export develop_web=2.7.2
 export develop_api=1.10.2
-export develop_mns=1.2.1
+export develop_mns=1.2.2
