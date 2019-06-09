@@ -12,7 +12,7 @@ ENV HOST_API_URL=${HOST_APP}
 EXPOSE 80 443
 
 COPY package.json .
-RUN npm install --only=production
+RUN npm install
 
 COPY . /app
 RUN echo "export const HOST_APP = \"https://${HOST_APP}/\";" > src/utils/Constants.js
