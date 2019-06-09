@@ -1,6 +1,5 @@
 #!/bin/bash
 set -x
-set -e
 
 ######################################################
 # Script to deploy specified layer in current server #
@@ -62,6 +61,11 @@ mv Fondo-${SUFFIX_PROJ}-${COMMIT} Fondo-${SUFFIX_PROJ}
 echo "Creating docker image for version: ${IMAGE_TAG}"
 docker-compose build ${LAYER}
 
+if [ $? -ne 0 ]; then
+    rm -rf Fondo-*
+    exit 1
+fi
+
 if [ "$(docker ps -a -q -f name=$ACTUAL_CONTAINER_NAME)" ]; then
     echo "stopping fondo_${LAYER}"
     docker stop $ACTUAL_CONTAINER_NAME && \
@@ -70,6 +74,11 @@ fi
 
 echo "Starting container"
 docker-compose run -d --service-ports --name ${ACTUAL_CONTAINER_NAME} ${LAYER}
+
+if [ $? -ne 0 ]; then
+    rm -rf Fondo-*
+    exit 1
+fi
 
 if [ $LAYER == 'api' ]; then
     echo "moving api's static files to nginx server"
