@@ -1,5 +1,6 @@
 #!/bin/bash
 set -x
+set -e
 
 ######################################################
 # Script to deploy specified layer in current server #
