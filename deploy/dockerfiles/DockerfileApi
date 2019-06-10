@@ -15,10 +15,5 @@ EXPOSE 8443
 
 COPY . /app
 
-RUN apk add tzdata
-RUN cp /usr/share/zoneinfo/America/Bogota /etc/localtime
-RUN echo "America/Bogota" > /etc/timezone
-RUN apk del tzdata
-
 ENTRYPOINT ["/bin/sh", "scripts/run-server.sh"]
 CMD ["api"]
