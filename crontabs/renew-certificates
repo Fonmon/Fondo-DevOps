@@ -5,6 +5,8 @@ set -x
 
 source /etc/environment
 
+exec &>> $HOME_FONMON/logs/cron_certificates.log
+
 echo "Domain custom script: ${CERTBOT_DOMAIN}"
 
 cd $(find /etc/letsencrypt/live/* -type d -name "*api*")

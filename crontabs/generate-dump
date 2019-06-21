@@ -1,7 +1,10 @@
 #!/bin/bash
 # Crontab: 0 0 * * 0 
 
+set -x
 source /etc/environment
+
+exec &>> $HOME_FONMON/logs/cron_dump.log
 
 DB=INSTALL_DB_NAME
 ENV=INSTALL_ENV_NAME
