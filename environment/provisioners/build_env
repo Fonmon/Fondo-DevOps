@@ -30,9 +30,6 @@ if [ -z "$(which docker-compose)" ]; then
 	chmod +x /usr/local/bin/docker-compose
 fi
 
-# install custom crontabs
-./crontabs/install_crontabs -a fondo${ENV} ${ENV}
-
 # certbot install
 apt-get install -y software-properties-common unzip python3 make
 add-apt-repository ppa:certbot/certbot -y
@@ -40,6 +37,9 @@ apt-get update
 apt-get install -y certbot
 
 cp deploy/.env.base deploy/.env
+
+# install custom crontabs
+./crontabs/install_crontabs -a fondo${ENV} ${ENV}
 
 mkdir dumps
 mkdir -p certificates/web
@@ -81,3 +81,9 @@ docker network create \
 # dhparam
 cd /home/$USER/Fondo-DevOps/
 openssl dhparam -out certificates/web/dhparam.pem 2048
+
+# Monitoring project
+cd .. && git clone https://github.com/Fonmon/Fondo-Monitoring.git
+chown -R ${USER}:${GROUP} Fondo-Monitoring
+cd Fondo-Monitoring
+docker-compose -f docker-compose.exporters.yml up -d

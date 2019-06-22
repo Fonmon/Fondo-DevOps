@@ -23,7 +23,7 @@ resource "aws_instance" "server" {
   ami                    = data.aws_ami.latest_ubuntu.id
   instance_type          = terraform.workspace == "dev" ? "t2.micro" : "t2.small"
   key_name               = terraform.workspace == "dev" ? "develop-minagle" : "minagle"
-  vpc_security_group_ids = [aws_security_group.s_sg_app.id, aws_security_group.s_sg_ssh.id]
+  vpc_security_group_ids = [aws_security_group.s_sg_app.id, aws_security_group.s_sg_ssh.id, aws_security_group.s_sg_monitoring.id]
   iam_instance_profile   = data.aws_iam_instance_profile.s_ssm_role.name
 
   root_block_device {
@@ -165,6 +165,37 @@ resource "aws_security_group" "s_sg_ssh" {
 
   tags = {
     Name = "SSH Connections"
+  }
+}
+
+resource "aws_security_group" "s_sg_monitoring" {
+  name          = "monitoring-sg"
+  description   = "Security group for monitoring"
+  vpc_id        = data.aws_vpc.default.id
+
+  ingress {
+    from_port   = 9000
+    to_port     = 9000
+    protocol    = "tcp"
+    cidr_blocks = "${var.cidr_monitoring}"
+  }
+
+  ingress {
+    from_port   = 9100
+    to_port     = 9100
+    protocol    = "tcp"
+    cidr_blocks = "${var.cidr_monitoring}"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "Monitoring Fonmon"
   }
 }
 

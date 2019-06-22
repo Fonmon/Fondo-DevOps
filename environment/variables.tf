@@ -11,3 +11,6 @@ variable "num_instances" {
   default = 1
 }
 
+variable "cidr_monitoring" {
+  default = []
+}
