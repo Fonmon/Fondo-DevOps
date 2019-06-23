@@ -11,4 +11,4 @@ recovery_files_*.tar.gz
 # Terraform
 *.tfvars
 .terraform/
-*.tfstate.d/
+*.tfstate*
