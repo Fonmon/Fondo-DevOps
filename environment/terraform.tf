@@ -43,27 +43,11 @@ resource "aws_instance" "server" {
   provisioner "file" {
     source      = "~/.ssh/git_fonmonbot/id_rsa"
     destination = "/home/ubuntu/.ssh/id_rsa"
-
-    connection {
-      type        = local.s_connection["type"]
-      agent       = local.s_connection["agent"]
-      host        = self.public_dns
-      user        = local.s_connection["user"]
-      private_key = local.s_connection["private_key"]
-    }
   }
 
   provisioner "file" {
     source      = "provisioners/config_git_ssh"
     destination = "/home/ubuntu/.ssh/config"
-
-    connection {
-      type        = local.s_connection["type"]
-      agent       = local.s_connection["agent"]
-      host        = self.public_dns
-      user        = local.s_connection["user"]
-      private_key = local.s_connection["private_key"]
-    }
   }
 
   provisioner "remote-exec" {
@@ -74,14 +58,6 @@ resource "aws_instance" "server" {
       "git clone https://github.com/Fonmon/Fondo-DevOps.git",
       "sudo ./Fondo-DevOps/environment/provisioners/build_env ubuntu ubuntu ${local.env_build}",
     ]
-
-    connection {
-      type        = local.s_connection["type"]
-      agent       = local.s_connection["agent"]
-      host        = self.public_dns
-      user        = local.s_connection["user"]
-      private_key = local.s_connection["private_key"]
-    }
   }
 
   provisioner "remote-exec" {
@@ -91,14 +67,6 @@ resource "aws_instance" "server" {
       "sudo git pull",
       "sudo ./environment/provisioners/make_recover_pkg ${local.env}",
     ]
-
-    connection {
-      type        = local.s_connection["type"]
-      agent       = local.s_connection["agent"]
-      host        = self.public_dns
-      user        = local.s_connection["user"]
-      private_key = local.s_connection["private_key"]
-    }
   }
 
   provisioner "local-exec" {
@@ -108,6 +76,14 @@ resource "aws_instance" "server" {
 
   tags = {
     Name = "${local.env} Fonmon"
+  }
+
+  connection {
+    type        = local.s_connection["type"]
+    agent       = local.s_connection["agent"]
+    host        = self.public_dns
+    user        = local.s_connection["user"]
+    private_key = local.s_connection["private_key"]
   }
 }
 
