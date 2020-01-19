@@ -91,6 +91,14 @@ if [ $LAYER == 'api' ]; then
             docker rm fondo_api_worker
     fi
     docker-compose run -d --service-ports --name fondo_api_worker api_worker worker
+
+    echo "deploy scheduler beat for api"
+    if [ "$(docker ps -a -q -f name=fondo_api_beat)" ]; then
+        echo "stopping fondo_api_beat"
+        docker stop fondo_api_beat && \
+            docker rm fondo_api_beat
+    fi
+    docker-compose run -d --service-ports --name fondo_api_beat api_beat scheduler
 fi
 
 rm -rf Fondo-*

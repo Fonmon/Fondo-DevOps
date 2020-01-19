@@ -58,6 +58,12 @@ services:
     env_file: .env
     depends_on:
       - redis
+  api_beat:
+    restart: always
+    image: fonapi_image:$IMAGE_TAG
+    env_file: .env
+    depends_on:
+      - redis
   redis:
     restart: always
     image: redis:alpine
