@@ -30,7 +30,7 @@ chown -R ubuntu:ubuntu $HOME_FONMON/certificates
 cd $HOME_FONMON
 
 # Fonmon files
-cp recovery_files/fonmon/.env deploy/
+cp recovery_files/fonmon/.env recovery_files/fonmon/fonmon-storage-credentials.json deploy/
 cp -r recovery_files/fonmon/front/* front/
 
 # Restore DB

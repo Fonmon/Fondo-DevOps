@@ -22,6 +22,10 @@ services:
     env_file: .env
     expose:
       - 8443
+    volumes:
+      - type: bind
+        source: ./fonmon-storage-credentials.json
+        target: /app/fonmon-storage-credentials.json
   web:
     restart: always
     build:
