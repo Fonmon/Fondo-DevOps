@@ -1,13 +1,5 @@
 locals {
   env        = terraform.workspace == "dev" ? "Dev" : "Prod"
-  env_build  = terraform.workspace == "dev" ? "dev" : "prod"
-  ssh_target = terraform.workspace == "dev" ? "dev-minagle" : "minagle"
-  s_connection = {
-    type        = "ssh"
-    agent       = "false"
-    user        = "ubuntu"
-    private_key = file("~/.ssh/${local.ssh_target}.pem")
-  }
 }
 
 provider "aws" {
@@ -56,7 +48,7 @@ resource "aws_instance" "server" {
       "chmod 400 .ssh/id_rsa .ssh/config",
       "sudo cp .ssh/id_rsa .ssh/config /root/.ssh/",
       "git clone https://github.com/Fonmon/Fondo-DevOps.git",
-      "sudo ./Fondo-DevOps/environment/provisioners/build_env ubuntu ubuntu ${local.env_build}",
+      "sudo ./Fondo-DevOps/environment/provisioners/build_env ubuntu ubuntu ${terraform.workspace}",
     ]
   }
 
@@ -65,13 +57,13 @@ resource "aws_instance" "server" {
     inline = [
       "cd /home/ubuntu/Fondo-DevOps",
       "sudo git pull",
-      "sudo ./environment/provisioners/make_recover_pkg ${local.env}",
+      "sudo ./environment/provisioners/make_recover_pkg ${terraform.workspace}",
     ]
   }
 
   provisioner "local-exec" {
     when    = destroy
-    command = "scp ${local.ssh_target}:~/recovery_files_* ."
+    command = "scp ${terraform.workspace == "dev" ? "dev-minagle" : "minagle"}:~/recovery_files_* ."
   }
 
   tags = {
@@ -79,11 +71,11 @@ resource "aws_instance" "server" {
   }
 
   connection {
-    type        = local.s_connection["type"]
-    agent       = local.s_connection["agent"]
+    type        = "ssh"
+    agent       = "false"
     host        = self.public_dns
-    user        = local.s_connection["user"]
-    private_key = local.s_connection["private_key"]
+    user        = "ubuntu"
+    private_key = file("~/.ssh/${terraform.workspace == "dev" ? "dev-minagle" : "minagle"}.pem")
   }
 }
 
