@@ -33,8 +33,8 @@ resource "aws_instance" "server" {
   }
 
   provisioner "file" {
-    source      = "~/.ssh/git_fonmonbot/id_rsa"
-    destination = "/home/ubuntu/.ssh/id_rsa"
+    source      = "~/.ssh/git_fonmonbot/id_ed25519"
+    destination = "/home/ubuntu/.ssh/id_ed25519"
   }
 
   provisioner "file" {
@@ -45,8 +45,8 @@ resource "aws_instance" "server" {
   provisioner "remote-exec" {
     inline = [
       "cd ~",
-      "chmod 400 .ssh/id_rsa .ssh/config",
-      "sudo cp .ssh/id_rsa .ssh/config /root/.ssh/",
+      "chmod 400 .ssh/id_ed25519 .ssh/config",
+      "sudo cp .ssh/id_ed25519 .ssh/config /root/.ssh/",
       "git clone https://github.com/Fonmon/Fondo-DevOps.git",
       "sudo ./Fondo-DevOps/environment/provisioners/build_env ubuntu ubuntu ${terraform.workspace}",
     ]
