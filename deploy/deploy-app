@@ -84,21 +84,29 @@ if [ $LAYER == 'api' ]; then
     echo "moving api's static files to nginx server"
     cp -r Fondo-${SUFFIX_PROJ}/fondo_api/static/* ../front/static_files/
 
-    echo "deploy worker for api"
+    # echo "deploy worker for api"
     if [ "$(docker ps -a -q -f name=fondo_api_worker)" ]; then
         echo "stopping fondo_api_worker"
         docker stop fondo_api_worker && \
             docker rm fondo_api_worker
     fi
-    docker-compose run -d --service-ports --name fondo_api_worker api_worker worker
+    # docker-compose run -d --service-ports --name fondo_api_worker api_beat worker
 
-    echo "deploy scheduler beat for api"
+    # echo "deploy scheduler beat for api"
     if [ "$(docker ps -a -q -f name=fondo_api_beat)" ]; then
         echo "stopping fondo_api_beat"
         docker stop fondo_api_beat && \
             docker rm fondo_api_beat
     fi
-    docker-compose run -d --service-ports --name fondo_api_beat api_beat scheduler
+    # docker-compose run -d --service-ports --name fondo_api_beat api_beat scheduler
+
+    echo "deploy scheduler beat and worker for api"
+    if [ "$(docker ps -a -q -f name=fondo_api_beat_work)" ]; then
+        echo "stopping fondo_api_beat_work"
+        docker stop fondo_api_beat_work && \
+            docker rm fondo_api_beat_work
+    fi
+    docker-compose run -d --service-ports --name fondo_api_beat_work api_beat sch_work
 fi
 
 rm -rf Fondo-*
