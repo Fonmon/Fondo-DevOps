@@ -15,6 +15,8 @@ ENV=$3
 
 cd /home/$USER/Fondo-DevOps/
 echo "export HOME_FONMON=$(pwd)" >> /etc/environment
+echo "export USER_FONMON=$USER" >> /etc/environment
+echo "export GROUP_FONMON=$GROUP" >> /etc/environment
 
 git remote set-url origin git@github.com:Fonmon/Fondo-DevOps.git
 

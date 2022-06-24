@@ -25,7 +25,7 @@ cp *.pem $HOME_FONMON/certificates/api
 cd $(find /etc/letsencrypt/live/* -type d ! -name "*api*")
 cp *.pem $HOME_FONMON/certificates/web
 
-chown -R ubuntu:ubuntu $HOME_FONMON/certificates
+chown -R $USER_FONMON:$GROUP_FONMON $HOME_FONMON/certificates
 
 cd $HOME_FONMON
 

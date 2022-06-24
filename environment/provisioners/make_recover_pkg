@@ -3,7 +3,7 @@ source /etc/environment
 ENV=${1:-none}
 
 # Run as admin
-cd /home/ubuntu
+cd /home/$USER_FONMON
 
 mkdir recovery_files && cd recovery_files
 
