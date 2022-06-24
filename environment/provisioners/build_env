@@ -83,7 +83,7 @@ cd /home/$USER/Fondo-DevOps/
 openssl dhparam -out certificates/web/dhparam.pem 2048
 
 # Monitoring project
-cd .. && git clone https://github.com/Fonmon/Fondo-Monitoring.git
-chown -R ${USER}:${GROUP} Fondo-Monitoring
-cd Fondo-Monitoring
-docker-compose -f docker-compose.exporters.yml up -d
+# cd .. && git clone https://github.com/Fonmon/Fondo-Monitoring.git
+# chown -R ${USER}:${GROUP} Fondo-Monitoring
+# cd Fondo-Monitoring
+# docker-compose -f docker-compose.exporters.yml up -d

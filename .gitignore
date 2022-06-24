@@ -7,6 +7,7 @@ front/
 dumps/
 .env
 recovery_files_*.tar.gz
+fonmon-storage-credentials.json
 
 # Terraform
 *.tfvars

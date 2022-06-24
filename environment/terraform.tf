@@ -13,7 +13,7 @@ resource "aws_instance" "server" {
   count = var.num_instances
 
   ami                    = data.aws_ami.latest_ubuntu.id
-  instance_type          = terraform.workspace == "dev" ? "t2.micro" : "t2.small"
+  instance_type          = terraform.workspace == "dev" ? "t2.micro" : "t4g.small"
   key_name               = terraform.workspace == "dev" ? "develop-minagle" : "minagle"
   vpc_security_group_ids = [ 
                             data.terraform_remote_state.sg.outputs.sg_ssh,
