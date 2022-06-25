@@ -16,6 +16,7 @@ if [ $# -ne 3 ]; then
 fi
 
 source /etc/environment
+su - $USER_FONMON
 cd $HOME_FONMON/deploy
 
 COMMIT=$1
