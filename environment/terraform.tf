@@ -47,24 +47,24 @@ resource "aws_instance" "server" {
       "cd ~",
       "chmod 400 .ssh/id_ed25519 .ssh/config",
       "sudo cp .ssh/id_ed25519 .ssh/config /root/.ssh/",
-      "git clone https://github.com/Fonmon/Fondo-DevOps.git",
+      "git clone git@github.com:Fonmon/Fondo-DevOps.git",
       "sudo ./Fondo-DevOps/environment/provisioners/build_env ubuntu ubuntu ${terraform.workspace}",
     ]
   }
 
-  provisioner "remote-exec" {
-    when = destroy
-    inline = [
-      "cd /home/ubuntu/Fondo-DevOps",
-      "sudo git pull",
-      "sudo ./environment/provisioners/make_recover_pkg ${terraform.workspace}",
-    ]
-  }
+  # provisioner "remote-exec" {
+  #   when = destroy
+  #   inline = [
+  #     "cd /home/ubuntu/Fondo-DevOps",
+  #     "sudo git pull",
+  #     "sudo ./environment/provisioners/make_recover_pkg ${terraform.workspace}",
+  #   ]
+  # }
 
-  provisioner "local-exec" {
-    when    = destroy
-    command = "scp ${terraform.workspace == "dev" ? "dev-minagle" : "minagle"}:~/recovery_files_* ."
-  }
+  # provisioner "local-exec" {
+  #   when    = destroy
+  #   command = "scp ${terraform.workspace == "dev" ? "dev-minagle" : "minagle"}:~/recovery_files_* ."
+  # }
 
   tags = {
     Name = "${local.env} Fonmon"
@@ -92,7 +92,7 @@ data "aws_ami" "latest_ubuntu" {
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20190617"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-arm64-server-*"]
   }
   filter {
     name   = "virtualization-type"

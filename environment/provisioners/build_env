@@ -18,7 +18,7 @@ echo "export HOME_FONMON=$(pwd)" >> /etc/environment
 echo "export USER_FONMON=$USER" >> /etc/environment
 echo "export GROUP_FONMON=$GROUP" >> /etc/environment
 
-git remote set-url origin git@github.com:Fonmon/Fondo-DevOps.git
+# git remote set-url origin git@github.com:Fonmon/Fondo-DevOps.git
 
 # docker install
 if [ -z "$(which docker)" ]; then
@@ -28,7 +28,7 @@ fi
 
 # docker-compose install
 if [ -z "$(which docker-compose)" ]; then
-	curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+	curl -L https://github.com/docker/compose/releases/download/v2.6.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 	chmod +x /usr/local/bin/docker-compose
 fi
 
@@ -83,6 +83,8 @@ docker network create \
 # dhparam
 cd /home/$USER/Fondo-DevOps/
 openssl dhparam -out certificates/web/dhparam.pem 2048
+
+git config --global --add safe.directory /home/$USER/Fondo-DevOps
 
 # Monitoring project
 # cd .. && git clone https://github.com/Fonmon/Fondo-Monitoring.git
