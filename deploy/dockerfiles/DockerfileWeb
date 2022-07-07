@@ -11,6 +11,7 @@ RUN npm run build
 
 FROM nginx:alpine
 WORKDIR /web
+ARG HOST_APP
 ENV HOST_API_URL=${HOST_APP}
 EXPOSE 80 443
 RUN apk update
