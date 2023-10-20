@@ -11,7 +11,7 @@ set -x
 # 3: env
 
 if [ $# -ne 3 ]; then
-    echo 'Arguments: commit_revision {web|api|mns} {master|develop}'
+    echo 'Arguments: commit_revision {web|api} {master|develop}'
     exit 1
 fi
 
@@ -33,21 +33,14 @@ if [ $LAYER == 'api' ]; then
     ACTUAL_CONTAINER_NAME=fondo_api
     ARTIFACT_URI="https://github.com/Fonmon/Fondo-API/archive/${COMMIT}.zip"
     SUFFIX_PROJ="API"
-    mkdir Fondo-Web && mkdir Fondo-MNS
+    mkdir Fondo-Web
 fi
 
 if [ $LAYER == 'web' ]; then
     ACTUAL_CONTAINER_NAME=fondo_web
     ARTIFACT_URI="https://github.com/Fonmon/Fondo-Web/archive/${COMMIT}.zip"
     SUFFIX_PROJ="Web"
-    mkdir Fondo-API && mkdir Fondo-MNS
-fi
-
-if [ $LAYER == 'mns' ]; then
-    ACTUAL_CONTAINER_NAME=fondo_mns
-    ARTIFACT_URI="https://github.com/Fonmon/Fondo-MNS/archive/${COMMIT}.zip"
-    SUFFIX_PROJ="MNS"
-    mkdir Fondo-API && mkdir Fondo-Web
+    mkdir Fondo-API
 fi
 
 export IMAGE_TAG=$(./../utils/versioning ${ENV} ${LAYER})

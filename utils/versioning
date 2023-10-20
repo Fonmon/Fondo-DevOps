@@ -6,7 +6,7 @@ source '../.version'
 source /etc/environment
 
 if [ $# -ne 2 ]; then
-    echo 'Arguments: {master|develop} {web|api|mns}'
+    echo 'Arguments: {master|develop} {web|api}'
     exit 1
 fi
 

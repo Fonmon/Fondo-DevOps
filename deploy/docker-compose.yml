@@ -47,15 +47,6 @@ services:
       - type: bind
         source: ../certificates/api/
         target: /etc/nginx/certs/api
-  mns:
-    restart: always
-    build:
-      context: ./Fondo-MNS
-      dockerfile: $PWD/dockerfiles/DockerfileMns
-    image: fonmns_image:$IMAGE_TAG
-    env_file: .env
-    expose:
-      - 9901
   api_beat:
     restart: always
     image: fonapi_image:$IMAGE_TAG
