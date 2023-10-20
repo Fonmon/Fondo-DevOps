@@ -45,11 +45,13 @@ fi
 
 export IMAGE_TAG=$(./../utils/versioning ${ENV} ${LAYER})
 
-wget $ARTIFACT_URI && \
-    unzip ${COMMIT}.zip && \
-    rm ${COMMIT}.zip
+ARTIFACT_NAME=Fondo-${SUFFIX_PROJ}-${COMMIT}
 
-mv Fondo-${SUFFIX_PROJ}-${COMMIT} Fondo-${SUFFIX_PROJ}
+wget $ARTIFACT_URI && \
+    unzip ${ARTIFACT_NAME}.zip && \
+    rm ${ARTIFACT_NAME}.zip
+
+mv $ARTIFACT_NAME Fondo-${SUFFIX_PROJ}
 
 echo "Creating docker image for version: ${IMAGE_TAG}"
 docker-compose build ${LAYER}
