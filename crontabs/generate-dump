@@ -11,10 +11,10 @@ ENV=INSTALL_ENV_NAME
 
 DATE=`date '+%d-%m-%Y_%H-%M'`
 YESTERDAY=$(date -d "$date -1 days" '+%d-%m-%Y_%H-%M')
-FILE_NAME="fonmon_${DATE}.sql"
+FILENAME="fonmon_${DATE}.sql"
 Y_FILENAME="fonmon_${YESTERDAY}.sql"
 
-FILE_PATH=/tmp/${FILE_NAME}.sql
+FILE_PATH=/tmp/${FILENAME}
 
 docker exec -t fondo_db pg_dump $DB -Ufondouser > $FILE_PATH
 # chown $USER_FONMON:$GROUP_FONMON $FILE_PATH
