@@ -12,7 +12,6 @@ cp -r /etc/letsencrypt/accounts /etc/letsencrypt/archive /etc/letsencrypt/live /
 
 mkdir fonmon
 cp -r $HOME_FONMON/front \
-      $HOME_FONMON/dumps \
       $HOME_FONMON/logs \
       $HOME_FONMON/deploy/.env \
       $HOME_FONMON/deploy/fonmon-storage-credentials.json \

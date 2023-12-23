@@ -43,7 +43,6 @@ cp deploy/.env.base deploy/.env
 # install custom crontabs
 ./crontabs/install_crontabs -a fondo${ENV} ${ENV}
 
-mkdir dumps
 mkdir -p certificates/web
 mkdir -p certificates/api
 mkdir -p front/static_files

@@ -53,13 +53,14 @@ if [ $DUMP = true ]; then
     fi
 
     cd $HOME_FONMON/crontabs
-    cp generate-dump /etc/cron.weekly/
+    cp generate-dump backup_generator
 
-    cd /etc/cron.weekly
     for i in ${VARIABLES[@]}; do
-        sed -i "s/${PREFIX}_${i}_${SUFFIX}/${!i}/g" generate-dump
+        sed -i "s/${PREFIX}_${i}_${SUFFIX}/${!i}/g" backup_generator
     done
-    chmod +x generate-dump
+    chmod +x backup_generator
+    # every 15th minute
+    echo "*/15 * * * * $HOME_FONMON/crontabs/backup_generator" >> /etc/crontab
 fi
 if [ $CERTIFICATE = true ]; then
     cd $HOME_FONMON/crontabs

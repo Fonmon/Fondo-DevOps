@@ -9,9 +9,16 @@ exec &>> $HOME_FONMON/logs/cron_dump.log
 DB=INSTALL_DB_NAME
 ENV=INSTALL_ENV_NAME
 
-DATE=$(date +%Y%m%d)
-FILE_NAME=fonmon-${ENV}-${DATE}
-FILE_PATH=${HOME_FONMON}/dumps/${FILE_NAME}.sql
+DATE=`date '+%d-%m-%Y_%H-%M'`
+YESTERDAY=$(date -d "$date -1 days" '+%d-%m-%Y_%H-%M')
+FILE_NAME="fonmon_${DATE}.sql"
+Y_FILENAME="fonmon_${YESTERDAY}.sql"
+
+FILE_PATH=/tmp/${FILE_NAME}.sql
 
 docker exec -t fondo_db pg_dump $DB -Ufondouser > $FILE_PATH
-chown $USER_FONMON:$GROUP_FONMON $FILE_PATH
+# chown $USER_FONMON:$GROUP_FONMON $FILE_PATH
+
+bash $HOME_FONMON/../Dropbox-Uploader/dropbox_uploader.sh upload $FILENAME $ENV/
+rm $FILE_PATH
+bash $HOME_FONMON/../Dropbox-Uploader/dropbox_uploader.sh delete $ENV/$Y_FILENAME
