@@ -61,6 +61,7 @@ if [ $DUMP = true ]; then
     chmod +x backup_generator
     # every 15th minute
     echo "*/15 * * * * $HOME_FONMON/crontabs/backup_generator" >> /etc/crontab
+    service cron reload
 fi
 if [ $CERTIFICATE = true ]; then
     cd $HOME_FONMON/crontabs
