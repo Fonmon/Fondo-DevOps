@@ -47,7 +47,7 @@ export IMAGE_TAG=$(./../utils/versioning ${ENV} ${LAYER})
 
 ARTIFACT_NAME=Fondo-${SUFFIX_PROJ}-${COMMIT}
 
-wget $ARTIFACT_URI && \
+wget -O ${ARTIFACT_NAME}.zip $ARTIFACT_URI && \
     unzip ${ARTIFACT_NAME}.zip && \
     rm ${ARTIFACT_NAME}.zip
 
