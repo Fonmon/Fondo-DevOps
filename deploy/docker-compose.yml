@@ -67,4 +67,5 @@ services:
 networks:
   default:
     external:
-      name: fondo_network_ipv6
+      name: fondo_network
+      # name: fondo_network_ipv6
