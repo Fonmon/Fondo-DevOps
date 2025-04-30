@@ -19,6 +19,6 @@ FILE_PATH=/tmp/${FILENAME}
 docker exec -t fondo_db pg_dump $DB -Ufondouser > $FILE_PATH
 # chown $USER_FONMON:$GROUP_FONMON $FILE_PATH
 
-bash $HOME_FONMON/../Dropbox-Uploader/dropbox_uploader.sh upload $FILE_PATH $ENV/
+dropbox_uploader.sh upload $FILE_PATH $ENV/
 rm $FILE_PATH
-bash $HOME_FONMON/../Dropbox-Uploader/dropbox_uploader.sh delete $ENV/$Y_FILENAME
+dropbox_uploader.sh delete $ENV/$Y_FILENAME

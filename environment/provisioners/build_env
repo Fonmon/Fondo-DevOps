@@ -43,6 +43,8 @@ add-apt-repository ppa:certbot/certbot -y
 apt-get update
 apt-get install -y certbot
 
+mkdir -p /etc/letsencrypt/renewal-hooks/deploy
+
 cp deploy/.env.base deploy/.env
 
 # install custom crontabs
