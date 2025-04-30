@@ -15,6 +15,7 @@ cp -r $HOME_FONMON/front \
       $HOME_FONMON/logs \
       $HOME_FONMON/deploy/.env \
       $HOME_FONMON/deploy/fonmon-storage-credentials.json \
+      /root/.dropbox_uploader \
       fonmon
 
 cd ..
