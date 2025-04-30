@@ -67,7 +67,7 @@ git clone https://github.com/fsaintjacques/semver-tool.git && \
 
 # create a file and make it a swapfile
 if [ -z "$(find / -maxdepth 1 -name 'swapfile')" ]; then
-    fallocate --length 2GiB /swapfile
+    fallocate --length 1GiB /swapfile
     chmod 600 /swapfile
     mkswap /swapfile
     swapon /swapfile
