@@ -1,6 +1,6 @@
 export master_web=2.35.0
 export master_api=1.45.0
-export master_apiv2=2.8.0
+export master_apiv2=2.9.0
 export develop_web=2.35.0
 export develop_api=1.45.0
-export develop_apiv2=2.8.0
+export develop_apiv2=2.9.0
