@@ -49,7 +49,7 @@ services:
       - fondodb
     env_file: .env_v2
     environment:
-      - SCHEDULER_ENABLED: true
+      SCHEDULER_ENABLED: true
     volumes:
       - type: bind
         source: ./fonmon-storage-credentials.json
