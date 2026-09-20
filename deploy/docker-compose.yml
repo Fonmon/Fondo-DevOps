@@ -27,6 +27,33 @@ services:
       - type: bind
         source: ./fonmon-storage-credentials.json
         target: /app/fonmon-storage-credentials.json
+  apiv2:
+    restart: always
+    build:
+      context: ./Fondo-API-v2
+      dockerfile: $PWD/dockerfiles/DockerfileApiV2
+    image: fonapi_image:$IMAGE_TAG
+    depends_on:
+      - fondodb
+    env_file: .env_v2
+    expose:
+      - 8443
+    volumes:
+      - type: bind
+        source: ./fonmon-storage-credentials.json
+        target: /app/fonmon-storage-credentials.json
+  apiv2_scheduler:
+    restart: always
+    image: fonapi_image:$IMAGE_TAG
+    depends_on:
+      - fondodb
+    env_file: .env_v2
+    environment:
+      - SCHEDULER_ENABLED: true
+    volumes:
+      - type: bind
+        source: ./fonmon-storage-credentials.json
+        target: /app/fonmon-storage-credentials.json
   web:
     restart: always
     build:
@@ -58,7 +85,6 @@ services:
       - type: bind
         source: ./fonmon-storage-credentials.json
         target: /app/fonmon-storage-credentials.json
-
   redis:
     restart: always
     image: redis:alpine

@@ -30,7 +30,7 @@ chown -R $USER_FONMON:$GROUP_FONMON $HOME_FONMON/certificates
 cd $HOME_FONMON
 
 # Fonmon files
-cp recovery_files/fonmon/.env recovery_files/fonmon/fonmon-storage-credentials.json deploy/
+cp recovery_files/fonmon/.env recovery_files/fonmon/.env_v2 recovery_files/fonmon/fonmon-storage-credentials.json deploy/
 cp -r recovery_files/fonmon/front/* front/
 
 # Dropbox uploader
@@ -43,11 +43,11 @@ cp recovery_files/fonmon/.dropbox_uploader /root/
 cd deploy/
 source .env
 
-mkdir Fondo-API Fondo-Web
+mkdir Fondo-API Fondo-Web Fondo-API-v2
 docker-compose up -d fondodb
 sleep 10
 # docker exec -i fondo_db psql -Ufondouser -d $POSTGRES_DATABASE < $DUMP_DB
 
 # Tear down
 cd $HOME_FONMON && rm -rf recovery_files $RECOVERY_FILE
-rm -rf deploy/Fondo-API deploy/Fondo-Web
+rm -rf deploy/Fondo-API deploy/Fondo-Web deploy/Fondo-API-v2

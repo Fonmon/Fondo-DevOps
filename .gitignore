@@ -6,6 +6,7 @@ logs/
 front/
 dumps/
 .env
+.env_v2
 recovery_files_*.tar.gz
 fonmon-storage-credentials.json
 backup_generator

@@ -11,7 +11,7 @@ set -x
 # 3: env
 
 if [ $# -ne 3 ]; then
-    echo 'Arguments: commit_revision {web|api} {master|develop}'
+    echo 'Arguments: commit_revision {web|api|apiv2} {master|develop}'
     exit 1
 fi
 
@@ -33,14 +33,21 @@ if [ $LAYER == 'api' ]; then
     ACTUAL_CONTAINER_NAME=fondo_api
     ARTIFACT_URI="https://github.com/Fonmon/Fondo-API/archive/${COMMIT}.zip"
     SUFFIX_PROJ="API"
-    mkdir Fondo-Web
+    mkdir Fondo-Web Fondo-API-v2
+fi
+
+if [ $LAYER == 'apiv2' ]; then
+    ACTUAL_CONTAINER_NAME=fondo_api
+    ARTIFACT_URI="https://github.com/Fonmon/Fondo-API-v2/archive/${COMMIT}.zip"
+    SUFFIX_PROJ="API-v2"
+    mkdir Fondo-Web Fondo-API
 fi
 
 if [ $LAYER == 'web' ]; then
     ACTUAL_CONTAINER_NAME=fondo_web
     ARTIFACT_URI="https://github.com/Fonmon/Fondo-Web/archive/${COMMIT}.zip"
     SUFFIX_PROJ="Web"
-    mkdir Fondo-API
+    mkdir Fondo-API Fondo-API-v2
 fi
 
 export IMAGE_TAG=$(./../utils/versioning ${ENV} ${LAYER})
@@ -75,10 +82,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-if [ $LAYER == 'api' ]; then
-    echo "moving api's static files to nginx server"
-    cp -r Fondo-${SUFFIX_PROJ}/fondo_api/static/* ../front/static_files/
-
+if [[ $LAYER == 'api' || $LAYER == 'apiv2' ]]; then
     # echo "deploy worker for api"
     if [ "$(docker ps -a -q -f name=fondo_api_worker)" ]; then
         echo "stopping fondo_api_worker"
@@ -95,13 +99,29 @@ if [ $LAYER == 'api' ]; then
     fi
     # docker-compose run -d --service-ports --name fondo_api_beat api_beat scheduler
 
-    echo "deploy scheduler beat and worker for api"
     if [ "$(docker ps -a -q -f name=fondo_api_beat_work)" ]; then
         echo "stopping fondo_api_beat_work"
         docker stop fondo_api_beat_work && \
             docker rm fondo_api_beat_work
     fi
-    docker-compose run -d --service-ports --name fondo_api_beat_work api_beat sch_work
+
+    if [ "$(docker ps -a -q -f name=fondo_api_scheduler)" ]; then
+        echo "stopping fondo_api_scheduler"
+        docker stop fondo_api_scheduler && \
+            docker rm fondo_api_scheduler
+    fi
+
+    if [ $LAYER == 'api' ]; then
+        echo "moving api's static files to nginx server"
+        cp -r Fondo-${SUFFIX_PROJ}/fondo_api/static/* ../front/static_files/
+        echo "deploy scheduler beat and worker for api"
+        docker-compose run -d --service-ports --name fondo_api_beat_work api_beat sch_work
+    else 
+        echo "moving api's static files to nginx server"
+        cp -r Fondo-${SUFFIX_PROJ}/static/* ../front/static_files/
+        echo "deploy scheduler v2"
+        docker-compose run -d --service-ports --name fondo_api_scheduler apiv2_scheduler
+    fi
 fi
 
 rm -rf Fondo-*
